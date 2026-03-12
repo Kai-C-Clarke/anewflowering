@@ -627,7 +627,12 @@ function addUserMessage(text) {
 }
 
 function writeEmail() {
-  window.location.href = 'mailto:pearl@askian.net?subject=A letter for Pearl';
+  var a = document.createElement('a');
+  a.href = 'mailto:pearl@askian.net?subject=A letter for Pearl';
+  a.target = '_blank';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 }
 
 document.addEventListener('DOMContentLoaded', init);
