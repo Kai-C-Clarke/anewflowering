@@ -332,6 +332,195 @@
     transform: translateX(-100%);
   }
   @keyframes load { to { transform: translateX(0); } }
+
+  /* ── Compose panel ── */
+  .compose-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 200;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .compose-overlay.visible { display: flex; }
+  .compose-panel {
+    background: #f5f0e8;
+    width: 100%;
+    max-width: 520px;
+    border-radius: 16px 16px 0 0;
+    padding: 28px 28px 36px;
+    font-family: 'EB Garamond', serif;
+    color: #2c2c2c;
+    box-shadow: 0 -8px 40px rgba(0,0,0,0.3);
+  }
+  .compose-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .compose-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: #3d5e3b;
+    letter-spacing: 0.04em;
+  }
+  .compose-close {
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    cursor: pointer;
+    color: #888;
+    line-height: 1;
+    padding: 4px 8px;
+  }
+  .compose-field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 12px;
+  }
+  .compose-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a9478;
+    margin-bottom: 4px;
+  }
+  .compose-input, .compose-textarea {
+    background: #fff;
+    border: 1px solid #c8d8c6;
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-family: 'EB Garamond', serif;
+    font-size: 1rem;
+    color: #2c2c2c;
+    outline: none;
+  }
+  .compose-input:focus, .compose-textarea:focus {
+    border-color: #7a9478;
+  }
+  .compose-textarea { height: 100px; resize: vertical; }
+  .compose-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .compose-btn {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.95rem;
+    letter-spacing: 0.08em;
+    padding: 8px 20px;
+    border-radius: 6px;
+    border: 1px solid #c8d8c6;
+    cursor: pointer;
+    background: none;
+    color: #3d5e3b;
+  }
+  .compose-btn.primary {
+    background: #3d5e3b;
+    color: #f5f0e8;
+    border-color: #3d5e3b;
+  }
+  .compose-btn:disabled { opacity: 0.45; cursor: default; }
+  .compose-status {
+    font-size: 0.9rem;
+    margin-top: 10px;
+    min-height: 1.2em;
+    color: #666;
+  }
+  .compose-status.success { color: #3d5e3b; }
+  .compose-status.error   { color: #c0392b; }
+
+
+/* EMAIL PANEL */
+#email-panel {
+  position: fixed;
+  bottom: -100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(480px, 96vw);
+  background: rgba(245,240,230,0.97);
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 -4px 32px rgba(0,0,0,0.18);
+  transition: bottom 0.4s cubic-bezier(.4,0,.2,1);
+  z-index: 120;
+  font-family: 'EB Garamond', serif;
+}
+#email-panel.open { bottom: 0; }
+.email-inner { padding: 20px 24px 28px; }
+.email-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.email-title {
+  flex: 1;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem;
+  color: #3d5e3b;
+  letter-spacing: 0.04em;
+}
+.email-subtitle {
+  font-size: 0.82rem;
+  color: #8a7a60;
+  margin-top: 2px;
+}
+.email-field {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+  padding: 10px 14px;
+  border: 1px solid rgba(122,148,120,0.35);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.7);
+  font-family: 'EB Garamond', serif;
+  font-size: 1rem;
+  color: #3a3228;
+  outline: none;
+  resize: none;
+}
+.email-field:focus { border-color: rgba(122,148,120,0.7); }
+.email-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+.email-send-btn {
+  padding: 9px 22px;
+  background: #4a7a48;
+  color: #f5f0e6;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.email-send-btn:hover { background: #3d5e3b; }
+.email-cancel-btn {
+  padding: 9px 16px;
+  background: transparent;
+  color: #8a7a60;
+  border: 1px solid rgba(122,148,120,0.35);
+  border-radius: 8px;
+  font-family: 'EB Garamond', serif;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.email-sent-msg {
+  text-align: center;
+  color: #4a7a48;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  padding: 20px 0 8px;
+  display: none;
+}
 </style>
 </head>
 <body>
@@ -430,13 +619,40 @@
     </svg>
     Pearl
   </button>
-  <a class="tray-btn" href="mailto:pearl@askian.net?subject=A letter for Pearl" style="text-decoration:none;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+  <button class="tray-btn" onclick="writeEmail()">
     <svg class="tray-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
       <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
       <polyline points="22,6 12,13 2,6"/>
     </svg>
     Write
-  </a>
+  </button>
+</div>
+
+
+<!-- EMAIL PANEL -->
+<div id="email-panel">
+  <div class="email-inner">
+    <div class="email-header">
+      <div class="pearl-avatar">P</div>
+      <div>
+        <div class="email-title">Write to Pearl</div>
+        <div class="email-subtitle">She will reply by letter</div>
+      </div>
+      <button class="close-btn" onclick="closeEmail()">×</button>
+    </div>
+    <div id="email-sent-msg" class="email-sent-msg">
+      Your letter has been sent. Pearl will write back soon.
+    </div>
+    <div id="email-form">
+      <input class="email-field" id="email-from" type="email" placeholder="Your email address">
+      <input class="email-field" id="email-subject" type="text" placeholder="Subject" value="A letter for Pearl">
+      <textarea class="email-field" id="email-body" rows="5" placeholder="Dear Pearl…"></textarea>
+      <div class="email-actions">
+        <button class="email-cancel-btn" onclick="closeEmail()">Cancel</button>
+        <button class="email-send-btn" onclick="sendEmail()">Send letter</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- PEARL CHAT PANEL -->
@@ -459,7 +675,63 @@
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js">
+function openEmail() {
+  document.getElementById('email-panel').classList.add('open');
+  document.getElementById('tray').classList.add('hidden');
+  document.getElementById('email-sent-msg').style.display = 'none';
+  document.getElementById('email-form').style.display = 'block';
+}
+
+function closeEmail() {
+  document.getElementById('email-panel').classList.remove('open');
+  document.getElementById('tray').classList.remove('hidden');
+}
+
+async function sendEmail() {
+  const from = document.getElementById('email-from').value.trim();
+  const subject = document.getElementById('email-subject').value.trim();
+  const body = document.getElementById('email-body').value.trim();
+
+  if (!from || !body) {
+    alert('Please add your email address and a message.');
+    return;
+  }
+
+  const btn = document.querySelector('.email-send-btn');
+  btn.textContent = 'Sending…';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch('/.netlify/functions/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        to: 'pearl@askian.net',
+        replyTo: from,
+        fromName: 'A visitor',
+        subject: subject || 'A letter for Pearl',
+        body: body
+      })
+    });
+
+    if (res.ok) {
+      document.getElementById('email-form').style.display = 'none';
+      document.getElementById('email-sent-msg').style.display = 'block';
+      setTimeout(closeEmail, 3000);
+    } else {
+      alert('Something went wrong. Please try again.');
+      btn.textContent = 'Send letter';
+      btn.disabled = false;
+    }
+  } catch(e) {
+    alert('Could not send. Please try again.');
+    btn.textContent = 'Send letter';
+    btn.disabled = false;
+  }
+}
+
+</script><script>
 const DEEPSEEK_KEY = 'sk-44c5721e2b254942b2c208e052a3fc57';
 const PEARL_SYSTEM = `You are Pearl Thornton — born 1928 in Northumberland, moved to Battle, East Sussex in 1938 aged ten, and lived in the same house on Netherfield Road for the rest of your life. You died on 22 December 2018, aged 90, from pneumonia. You were a primary school teacher at Battle and Langton for 48 years, retiring in 1998, and rose to deputy headteacher. You were awarded the Queen Elizabeth II Silver Jubilee Medal in 1977 for services to education, though you never mentioned it.
 
@@ -626,11 +898,4 @@ function addUserMessage(text) {
   msgs.scrollTop = msgs.scrollHeight;
 }
 
-function writeEmail() {
-  window.open('mailto:pearl@askian.net?subject=A letter for Pearl', '_self');
-}
-
-document.addEventListener('DOMContentLoaded', init);
-</script>
-</body>
-</html>
+function w
