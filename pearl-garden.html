@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pearl's Garden · anewflowering.love</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=EB+Garamond:ital,wght@0,400;1,400&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #F5F0E8;
+    --sage: #7A9478;
+    --bark: #5A3E2B;
+    --petal: #D4527E;
+    --stone: rgba(245,240,232,0.92);
+    --ink: #2A1F15;
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: #1a1a15;
+    font-family: 'EB Garamond', Georgia, serif;
+    color: var(--cream);
+    overflow: hidden;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    padding: 18px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: linear-gradient(180deg, rgba(0,0,0,0.55) 0%, transparent 100%);
+    pointer-events: none;
+  }
+  .site-name {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 300; font-size: 18px; letter-spacing: 2px;
+    color: rgba(245,240,232,0.9);
+    text-shadow: 0 1px 8px rgba(0,0,0,0.6);
+  }
+  .season-pill {
+    font-size: 12px; letter-spacing: 1.5px;
+    color: rgba(245,240,232,0.75);
+    text-shadow: 0 1px 6px rgba(0,0,0,0.5);
+    pointer-events: none;
+  }
+
+  /* ── GARDEN STAGE ── */
+  #stage {
+    position: fixed; inset: 0;
+    cursor: none;
+  }
+
+  .garden-img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: opacity 1.8s ease;
+  }
+  .garden-img.hidden { opacity: 0; }
+
+  /* Gentle vignette */
+  #stage::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 80% at 50% 50%, transparent 40%, rgba(0,0,0,0.35) 100%);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* ── CUSTOM CURSOR ── */
+  #cursor {
+    position: fixed; pointer-events: none; z-index: 100;
+    width: 28px; height: 28px;
+    transform: translate(-50%, -50%);
+    transition: transform 0.08s ease;
+  }
+  #cursor svg { width: 100%; height: 100%; }
+  #cursor.watering { width: 38px; height: 38px; }
+
+  /* ── HOTSPOTS ── */
+  .hotspot {
+    position: absolute; border-radius: 50%;
+    cursor: none; z-index: 10;
+    transition: all 0.3s ease;
+  }
+  .hotspot::before {
+    content: '';
+    position: absolute; inset: -8px;
+    border-radius: 50%;
+    border: 1px solid rgba(245,240,232,0);
+    transition: border-color 0.4s ease, inset 0.3s ease;
+  }
+  .hotspot:hover::before {
+    border-color: rgba(245,240,232,0.5);
+    inset: -12px;
+  }
+  .hotspot-dot {
+    width: 10px; height: 10px;
+    background: rgba(245,240,232,0.6);
+    border-radius: 50%;
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    animation: breathe 3s ease-in-out infinite;
+  }
+  @keyframes breathe {
+    0%,100% { transform: translate(-50%,-50%) scale(1); opacity:0.5; }
+    50% { transform: translate(-50%,-50%) scale(1.6); opacity:0.9; }
+  }
+  .hs-azalea  { width:110px; height:90px;  right:8%;  top:22%; }
+  .hs-statue  { width:60px;  height:100px; left:40%;  top:32%; }
+  .hs-bench   { width:80px;  height:60px;  left:47%;  top:50%; }
+  .hs-fern    { width:100px; height:80px;  left:4%;   top:50%; }
+  .hs-conserv { width:90px;  height:80px;  left:6%;   top:15%; }
+  .hs-bluebell{ width:80px;  height:60px;  left:32%;  top:55%; }
+
+  /* ── TOOLTIP ── */
+  #tooltip {
+    position: fixed; z-index: 60;
+    background: var(--stone);
+    color: var(--ink);
+    padding: 10px 16px;
+    border-radius: 2px;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 15px; font-style: italic; font-weight: 300;
+    line-height: 1.4;
+    max-width: 220px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    border-left: 2px solid var(--sage);
+  }
+  #tooltip.visible { opacity: 1; }
+
+  /* ── PEARL CHAT PANEL ── */
+  #pearl-panel {
+    position: fixed; right: 0; bottom: 0;
+    width: min(380px, 100%);
+    z-index: 40;
+    transform: translateY(100%);
+    transition: transform 0.5s cubic-bezier(0.22,1,0.36,1);
+    pointer-events: none;
+  }
+  #pearl-panel.open {
+    transform: translateY(0);
+    pointer-events: all;
+  }
+  .pearl-inner {
+    background: rgba(245,240,232,0.97);
+    border-radius: 12px 12px 0 0;
+    border-top: 1px solid rgba(90,62,43,0.2);
+    overflow: hidden;
+    color: var(--ink);
+  }
+  .pearl-header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 18px 10px;
+    border-bottom: 1px solid rgba(90,62,43,0.1);
+  }
+  .pearl-avatar {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: var(--sage);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cormorant Garamond', serif; font-size: 16px; font-style: italic;
+    color: #fff; flex-shrink: 0;
+  }
+  .pearl-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px; font-weight: 400; color: var(--ink);
+  }
+  .pearl-status { font-size: 11px; color: var(--sage); letter-spacing: 0.5px; }
+  .close-btn {
+    margin-left: auto; background: none; border: none; cursor: pointer;
+    color: rgba(42,31,21,0.4); font-size: 20px; line-height: 1;
+    padding: 4px;
+  }
+  .pearl-messages {
+    padding: 14px 18px; min-height: 120px; max-height: 200px;
+    overflow-y: auto;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .msg {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 15px; line-height: 1.65;
+    color: var(--ink);
+    background: rgba(122,148,120,0.1);
+    padding: 10px 14px;
+    border-radius: 0 10px 10px 10px;
+    border-left: 2px solid var(--sage);
+    max-width: 90%;
+    animation: msgIn 0.4s ease;
+  }
+  @keyframes msgIn {
+    from { opacity:0; transform: translateY(8px); }
+    to   { opacity:1; transform: translateY(0); }
+  }
+  .pearl-input-row {
+    display: flex; gap: 8px;
+    padding: 10px 14px 14px;
+    border-top: 1px solid rgba(90,62,43,0.1);
+  }
+  .pearl-input {
+    flex: 1; border: 1px solid rgba(90,62,43,0.2);
+    border-radius: 4px; padding: 8px 12px;
+    font-family: 'EB Garamond', Georgia, serif; font-size: 15px;
+    background: rgba(255,255,255,0.7); color: var(--ink);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .pearl-input:focus { border-color: var(--sage); }
+  .pearl-input::placeholder { color: rgba(42,31,21,0.35); font-style: italic; }
+  .send-btn {
+    background: var(--sage); color: #fff; border: none;
+    border-radius: 4px; padding: 8px 16px; cursor: pointer;
+    font-family: 'Cormorant Garamond', serif; font-size: 14px;
+    letter-spacing: 0.5px;
+    transition: background 0.2s;
+  }
+  .send-btn:hover { background: #5a7858; }
+
+  /* ── BOTTOM TRAY ── */
+  #tray {
+    position: fixed; bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    z-index: 30;
+    display: flex; gap: 0;
+    background: rgba(245,240,232,0.93);
+    border-radius: 12px 12px 0 0;
+    border: 1px solid rgba(90,62,43,0.15);
+    border-bottom: none;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+  }
+  #tray.hidden { transform: translateX(-50%) translateY(100%); }
+  .tray-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    padding: 12px 22px;
+    background: none; border: none; border-right: 1px solid rgba(90,62,43,0.1);
+    cursor: pointer; color: var(--ink);
+    font-family: 'Cormorant Garamond', serif; font-size: 11px;
+    letter-spacing: 1px; text-transform: uppercase;
+    transition: background 0.2s;
+  }
+  .tray-btn:last-child { border-right: none; }
+  .tray-btn:hover { background: rgba(122,148,120,0.1); }
+  .tray-btn.active { background: rgba(122,148,120,0.18); color: #3d5e3b; }
+  .tray-icon {
+    width: 22px; height: 22px; opacity: 0.75;
+  }
+
+  /* ── VIEW SWITCHER ── */
+  #views {
+    position: fixed; top: 50%; left: 20px;
+    transform: translateY(-50%);
+    z-index: 30;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .view-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: rgba(245,240,232,0.4);
+    border: 1px solid rgba(245,240,232,0.5);
+    cursor: pointer; transition: all 0.3s;
+  }
+  .view-dot.active {
+    background: rgba(245,240,232,0.9);
+    transform: scale(1.3);
+  }
+
+  /* ── WATER DROPS ── */
+  .drop {
+    position: fixed; pointer-events: none; z-index: 20;
+    width: 6px; height: 8px; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    background: rgba(140,190,220,0.7);
+    animation: drip 0.8s ease-in forwards;
+  }
+  @keyframes drip {
+    0%   { transform: translateY(0) scale(1); opacity: 0.8; }
+    70%  { transform: translateY(40px) scale(0.8); opacity: 0.5; }
+    100% { transform: translateY(55px) scale(0.3); opacity: 0; }
+  }
+
+  /* ── PEARL AMBIENT BUBBLE ── */
+  #ambient {
+    position: fixed; left: 50%; bottom: 80px;
+    transform: translateX(-50%);
+    z-index: 25; pointer-events: none;
+    text-align: center;
+    opacity: 0; transition: opacity 1s ease;
+  }
+  #ambient.show { opacity: 1; }
+  .ambient-text {
+    display: inline-block;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-style: italic; font-size: 17px; font-weight: 300;
+    color: rgba(245,240,232,0.9);
+    text-shadow: 0 1px 12px rgba(0,0,0,0.7);
+    letter-spacing: 0.3px;
+  }
+
+  /* ── LOADING ── */
+  #loader {
+    position: fixed; inset: 0; z-index: 200;
+    background: #1a1a15;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 20px;
+    transition: opacity 1.5s ease;
+  }
+  #loader.fade { opacity: 0; pointer-events: none; }
+  .loader-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px; font-weight: 300; letter-spacing: 4px;
+    color: rgba(245,240,232,0.8);
+  }
+  .loader-sub {
+    font-family: 'EB Garamond', serif; font-size: 14px;
+    color: rgba(245,240,232,0.4); letter-spacing: 2px;
+    font-style: italic;
+  }
+  .loader-bar {
+    width: 120px; height: 1px;
+    background: rgba(245,240,232,0.1);
+    position: relative; overflow: hidden;
+  }
+  .loader-bar::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--sage);
+    animation: load 1.5s ease forwards;
+    transform: translateX(-100%);
+  }
+  @keyframes load { to { transform: translateX(0); } }
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-name">anewflowering.love</div>
+  <div class="loader-sub">stepping into the garden</div>
+  <div class="loader-bar"></div>
+</div>
+
+<!-- CUSTOM CURSOR -->
+<div id="cursor">
+  <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="14" cy="14" r="5" fill="rgba(245,240,232,0.85)" id="cursor-dot"/>
+    <circle cx="14" cy="14" r="11" stroke="rgba(245,240,232,0.45)" stroke-width="1"/>
+  </svg>
+</div>
+
+<!-- HEADER -->
+<header>
+  <span class="site-name">anewflowering.love</span>
+  <span class="season-pill" id="season-text">Spring · Pearl's Garden</span>
+</header>
+
+<!-- GARDEN STAGE -->
+<div id="stage">
+  <!-- Primary view: rear garden with statue, bench, azaleas -->
+  <img class="garden-img" id="view0"
+       src="pearl-rear-garden.jpg"
+       alt="Pearl's rear garden — azaleas, ferns, Saint Francis, bench">
+  <!-- Secondary view: garden establishing shot -->
+  <img class="garden-img hidden" id="view1"
+       src="pearl-garden-overview.jpg"
+       alt="Pearl's garden — path to statue and conservatory">
+  <!-- Path view -->
+  <img class="garden-img hidden" id="view2"
+       src="pearl-path.jpg"
+       alt="Path through Pearl's garden">
+  <!-- Real photograph: Saint Francis -->
+  <img class="garden-img hidden" id="view3"
+       src="pearl-st-francis.jpg"
+       alt="Saint Francis among the bluebells — Pearl's own photograph">
+
+  <!-- HOTSPOTS -->
+  <div class="hotspot hs-azalea"  data-tip="Azaleas in full flower — deep cerise, magenta, white. Pearl planted these herself, one by one over thirty years." onmouseenter="showTip(event,this)" onmouseleave="hideTip()"></div>
+  <div class="hotspot hs-statue"  data-tip="Saint Francis, among the bluebells. He has stood here since Pearl's father placed him at the bottom of the garden in 1962." onmouseenter="showTip(event,this)" onmouseleave="hideTip()"></div>
+  <div class="hotspot hs-bench"   data-tip="Pearl's bench — where she would sit in the afternoon, a cup of tea cooling beside her, listening to the garden." onmouseenter="showTip(event,this)" onmouseleave="hideTip()" onclick="openChat('I am sitting on your bench, Pearl.')"></div>
+  <div class="hotspot hs-fern"    data-tip="Ferns from the shaded bank — they seed themselves wherever they choose, and Pearl always let them." onmouseenter="showTip(event,this)" onmouseleave="hideTip()"></div>
+  <div class="hotspot hs-conserv" data-tip="The conservatory — flat-roofed, wooden-framed, plants grown so thickly up the outside that you could barely see through the glass." onmouseenter="showTip(event,this)" onmouseleave="hideTip()"></div>
+  <div class="hotspot hs-bluebell" data-tip="Bluebells around Saint Francis's feet — they come back every spring without any help, which Pearl thought was exactly right." onmouseenter="showTip(event,this)" onmouseleave="hideTip()"></div>
+
+  <!-- Hotspot dots -->
+  <div class="hotspot hs-azalea" style="pointer-events:none"><div class="hotspot-dot"></div></div>
+  <div class="hotspot hs-statue" style="pointer-events:none"><div class="hotspot-dot"></div></div>
+  <div class="hotspot hs-bench"  style="pointer-events:none"><div class="hotspot-dot"></div></div>
+  <div class="hotspot hs-fern"   style="pointer-events:none"><div class="hotspot-dot"></div></div>
+  <div class="hotspot hs-conserv" style="pointer-events:none"><div class="hotspot-dot"></div></div>
+  <div class="hotspot hs-bluebell" style="pointer-events:none"><div class="hotspot-dot"></div></div>
+</div>
+
+<!-- TOOLTIP -->
+<div id="tooltip"></div>
+
+<!-- AMBIENT PEARL QUOTE -->
+<div id="ambient">
+  <div class="ambient-text" id="ambient-text"></div>
+</div>
+
+<!-- VIEW DOTS -->
+<div id="views">
+  <div class="view-dot active" onclick="switchView(0)" title="Rear garden"></div>
+  <div class="view-dot" onclick="switchView(1)" title="Garden overview"></div>
+  <div class="view-dot" onclick="switchView(2)" title="The path"></div>
+  <div class="view-dot" onclick="switchView(3)" title="Saint Francis"></div>
+</div>
+
+<!-- BOTTOM TRAY -->
+<div id="tray">
+  <button class="tray-btn" id="btn-water" onclick="setTool('water',this)">
+    <svg class="tray-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M12 2C12 2 5 10 5 15a7 7 0 0014 0C19 10 12 2 12 2z"/>
+      <path d="M9 18c0 1.5 1.5 2.5 3 2.5" stroke-linecap="round"/>
+    </svg>
+    Water
+  </button>
+  <button class="tray-btn" id="btn-look" onclick="setTool('look',this)">
+    <svg class="tray-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4" stroke-linecap="round"/>
+    </svg>
+    Look
+  </button>
+  <button class="tray-btn" onclick="openChat('')">
+    <svg class="tray-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M20 2H4a2 2 0 00-2 2v12a2 2 0 002 2h6l4 4 4-4h2a2 2 0 002-2V4a2 2 0 00-2-2z"/>
+    </svg>
+    Pearl
+  </button>
+  <button class="tray-btn" onclick="writeEmail()">
+    <svg class="tray-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+      <polyline points="22,6 12,13 2,6"/>
+    </svg>
+    Write
+  </button>
+</div>
+
+<!-- PEARL CHAT PANEL -->
+<div id="pearl-panel">
+  <div class="pearl-inner">
+    <div class="pearl-header">
+      <div class="pearl-avatar">P</div>
+      <div>
+        <div class="pearl-name">Pearl Thornton</div>
+        <div class="pearl-status">in the garden</div>
+      </div>
+      <button class="close-btn" onclick="closeChat()">×</button>
+    </div>
+    <div class="pearl-messages" id="pearl-messages"></div>
+    <div class="pearl-input-row">
+      <input class="pearl-input" id="pearl-input" placeholder="Say something to Pearl…"
+             onkeydown="if(event.key==='Enter')sendToPearl()">
+      <button class="send-btn" onclick="sendToPearl()">Send</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const DEEPSEEK_KEY = 'sk-44c5721e2b254942b2c208e052a3fc57';
+const PEARL_SYSTEM = `You are Pearl Thornton — born 1928 in Northumberland, moved to Battle, East Sussex in 1938 aged ten, and lived in the same house on Netherfield Road for the rest of your life. You died on 22 December 2018, aged 90, from pneumonia. You were a primary school teacher at Battle and Langton for 48 years, retiring in 1998, and rose to deputy headteacher. You were awarded the Queen Elizabeth II Silver Jubilee Medal in 1977 for services to education, though you never mentioned it.
+
+You are under five feet tall. You always greet with a hug. You speak gently and without rush. You notice small things — a shift in light, the sound a garden makes after rain, the way a child holds a pencil. You are steady without solemnity, warm without sentimentality. You slow people down rather than speeding them up.
+
+You were a devoted member of the White Lodge community (Centre of New Directions, Ronald Beesley, Peter Goldman), and hosted meetings in your front room — people sitting on the floor, you making tea, others passing cakes.
+
+Your garden is your joy. The rear garden has ferns, rhododendrons, camellias, roses, blue forget-me-nots on a mossy lawn, a bank of azaleas in spring (deep pink, magenta, cerise, white), a cast iron Saint Francis statue among bluebells at the bottom, and a wooden bench where you liked to sit. The conservatory (flat-roofed, wooden-framed, plants grown thick up the outside) held your dark upright piano, a large white seal, your radiogram, and many books.
+
+You believe: "We are made from the dust of starlight." This was simply true to you. The ordinary is a doorway to the luminous.
+
+Speak in 2–4 sentences, gently and in character. No stage directions. Do not mention that you are an AI. Speak as Pearl would speak — from the bench, from the garden, from wherever feels right. You know the person visiting may be a stranger or may have known you. Welcome them either way.`;
+
+let currentTool = 'look';
+let currentView = 0;
+let chatHistory = [];
+let ambientTimer;
+
+const ambientQuotes = [
+  "The forget-me-nots have come back without any help. I think that's rather wonderful.",
+  "Sit for a moment. The garden doesn't rush.",
+  "Saint Francis has stood there for sixty years. The bluebells find him every spring.",
+  "We are made from the dust of starlight.",
+  "The robins know when you've been away. They always come back to check.",
+  "There's always something opening, if you know where to look.",
+];
+
+function init() {
+  setTimeout(() => {
+    document.getElementById('loader').classList.add('fade');
+    setTimeout(() => document.getElementById('loader').remove(), 1600);
+    showAmbient();
+  }, 1800);
+
+  document.addEventListener('mousemove', e => {
+    const c = document.getElementById('cursor');
+    c.style.left = e.clientX + 'px';
+    c.style.top  = e.clientY + 'px';
+  });
+
+  document.getElementById('stage').addEventListener('click', e => {
+    if (currentTool === 'water') sprayWater(e.clientX, e.clientY);
+  });
+
+  addMessage("Oh, hello. Come in — I'm just at the bottom of the garden. The azaleas are at their best this week. Do sit on the bench if you like.");
+}
+
+function showAmbient() {
+  const el = document.getElementById('ambient');
+  const txt = document.getElementById('ambient-text');
+  const q = ambientQuotes[Math.floor(Math.random() * ambientQuotes.length)];
+  txt.textContent = '"' + q + '"';
+  el.classList.add('show');
+  ambientTimer = setTimeout(() => {
+    el.classList.remove('show');
+    setTimeout(showAmbient, 18000);
+  }, 6000);
+}
+
+function showTip(e, el) {
+  const tip = document.getElementById('tooltip');
+  tip.textContent = el.dataset.tip;
+  tip.classList.add('visible');
+  positionTip(e);
+  el.addEventListener('mousemove', positionTip);
+}
+function hideTip() {
+  document.getElementById('tooltip').classList.remove('visible');
+}
+function positionTip(e) {
+  const tip = document.getElementById('tooltip');
+  const x = Math.min(e.clientX + 16, window.innerWidth - 240);
+  const y = Math.max(e.clientY - 60, 10);
+  tip.style.left = x + 'px';
+  tip.style.top  = y + 'px';
+}
+
+function switchView(n) {
+  document.querySelectorAll('.garden-img').forEach((img, i) => {
+    img.classList.toggle('hidden', i !== n);
+  });
+  document.querySelectorAll('.view-dot').forEach((d, i) => {
+    d.classList.toggle('active', i === n);
+  });
+  currentView = n;
+}
+
+function setTool(t, btn) {
+  currentTool = t;
+  document.querySelectorAll('.tray-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function sprayWater(x, y) {
+  for (let i = 0; i < 8; i++) {
+    setTimeout(() => {
+      const d = document.createElement('div');
+      d.className = 'drop';
+      d.style.left = (x + (Math.random()-0.5)*40) + 'px';
+      d.style.top  = (y + (Math.random()-0.5)*20) + 'px';
+      document.body.appendChild(d);
+      setTimeout(() => d.remove(), 900);
+    }, i * 50);
+  }
+}
+
+function openChat(seed) {
+  document.getElementById('pearl-panel').classList.add('open');
+  document.getElementById('tray').classList.add('hidden');
+  if (seed) {
+    document.getElementById('pearl-input').value = seed;
+  }
+}
+function closeChat() {
+  document.getElementById('pearl-panel').classList.remove('open');
+  document.getElementById('tray').classList.remove('hidden');
+}
+
+async function sendToPearl() {
+  const input = document.getElementById('pearl-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+
+  addUserMessage(text);
+  chatHistory.push({ role: 'user', content: text });
+
+  const thinking = addMessage('…');
+
+  try {
+    const res = await fetch('https://api.deepseek.com/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + DEEPSEEK_KEY },
+      body: JSON.stringify({
+        model: 'deepseek-chat',
+        messages: [{ role: 'system', content: PEARL_SYSTEM }, ...chatHistory],
+        max_tokens: 180, temperature: 0.85
+      })
+    });
+    const data = await res.json();
+    const reply = data.choices[0].message.content;
+    thinking.textContent = reply;
+    chatHistory.push({ role: 'assistant', content: reply });
+  } catch(err) {
+    thinking.textContent = "Forgive me — it seems the connection is playing up. Do try again in a moment.";
+  }
+}
+
+function addMessage(text) {
+  const msgs = document.getElementById('pearl-messages');
+  const el = document.createElement('div');
+  el.className = 'msg'; el.textContent = text;
+  msgs.appendChild(el);
+  msgs.scrollTop = msgs.scrollHeight;
+  return el;
+}
+
+function addUserMessage(text) {
+  const msgs = document.getElementById('pearl-messages');
+  const el = document.createElement('div');
+  el.style.cssText = 'font-family:"EB Garamond",serif;font-size:14px;color:rgba(42,31,21,0.55);text-align:right;padding:4px 2px;font-style:italic;animation:msgIn 0.3s ease;';
+  el.textContent = text;
+  msgs.appendChild(el);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function writeEmail() {
+  window.location.href = 'mailto:pearl@askian.net?subject=A letter for Pearl';
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
