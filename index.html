@@ -566,20 +566,20 @@
        alt="Saint Francis among the bluebells — Pearl's own photograph">
 
   <!-- HOTSPOTS -->
-  <div class="hotspot hs-azalea"  data-tip="Azaleas in full flower — deep cerise, magenta, white. Pearl planted these herself, one by one over thirty years." onmouseenter="showTip(event,this)" onmouseleave="hideTip()"></div>
-  <div class="hotspot hs-statue"  data-tip="Saint Francis, among the bluebells. He has stood here since Pearl's father placed him at the bottom of the garden in 1962." onmouseenter="showTip(event,this)" onmouseleave="hideTip()"></div>
-  <div class="hotspot hs-bench"   data-tip="The bench was a gift to Pearl from the White Lodge community. She kept it at the bottom of the garden beside Saint Francis. It now sits in Jon's garden." onmouseenter="showTip(event,this)" onmouseleave="hideTip()" onclick="openChat('I am sitting on your bench, Pearl.')"></div>
-  <div class="hotspot hs-fern"    data-tip="Ferns from the shaded bank — they seed themselves wherever they choose, and Pearl always let them." onmouseenter="showTip(event,this)" onmouseleave="hideTip()"></div>
-  <div class="hotspot hs-conserv" data-tip="The conservatory — flat-roofed, wooden-framed, plants grown so thickly up the outside that you could barely see through the glass." onmouseenter="showTip(event,this)" onmouseleave="hideTip()"></div>
-  <div class="hotspot hs-bluebell" data-tip="Bluebells around Saint Francis's feet — they come back every spring without any help, which Pearl thought was exactly right." onmouseenter="showTip(event,this)" onmouseleave="hideTip()"></div>
+  <div class="hotspot hs-azalea" data-views="0,1" data-tip="Azaleas in full flower — deep cerise, magenta, white. Pearl planted these herself, one by one over thirty years." onmouseenter="showTip(event,this)" onmouseleave="hideTip()"></div>
+  <div class="hotspot hs-statue" data-views="0,3" data-tip="Saint Francis, among the bluebells. He has stood at the bottom of the garden for as long as anyone can remember — patient, weathered, watching over everything that grows." onmouseenter="showTip(event,this)" onmouseleave="hideTip()"></div>
+  <div class="hotspot hs-bench" data-views="0" data-tip="The bench was a gift to Pearl from the White Lodge community. She kept it at the bottom of the garden beside Saint Francis. It now sits in Jon's garden." onmouseenter="showTip(event,this)" onmouseleave="hideTip()" onclick="openChat('I am sitting on your bench, Pearl.')"></div>
+  <div class="hotspot hs-fern" data-views="0,1,2" data-tip="Ferns from the shaded bank — they seed themselves wherever they choose, and Pearl always let them." onmouseenter="showTip(event,this)" onmouseleave="hideTip()"></div>
+  <div class="hotspot hs-conserv" data-views="0,1" data-tip="The conservatory — flat-roofed, wooden-framed, plants grown so thickly up the outside that you could barely see through the glass." onmouseenter="showTip(event,this)" onmouseleave="hideTip()"></div>
+  <div class="hotspot hs-bluebell" data-views="0,3" data-tip="Bluebells around Saint Francis's feet — they come back every spring without any help, which Pearl thought was exactly right." onmouseenter="showTip(event,this)" onmouseleave="hideTip()"></div>
 
   <!-- Hotspot dots -->
-  <div class="hotspot hs-azalea" style="pointer-events:none"><div class="hotspot-dot"></div></div>
-  <div class="hotspot hs-statue" style="pointer-events:none"><div class="hotspot-dot"></div></div>
-  <div class="hotspot hs-bench"  style="pointer-events:none"><div class="hotspot-dot"></div></div>
-  <div class="hotspot hs-fern"   style="pointer-events:none"><div class="hotspot-dot"></div></div>
-  <div class="hotspot hs-conserv" style="pointer-events:none"><div class="hotspot-dot"></div></div>
-  <div class="hotspot hs-bluebell" style="pointer-events:none"><div class="hotspot-dot"></div></div>
+  <div class="hotspot hs-azalea" data-views="0,1" style="pointer-events:none"><div class="hotspot-dot"></div></div>
+  <div class="hotspot hs-statue" data-views="0,3" style="pointer-events:none"><div class="hotspot-dot"></div></div>
+  <div class="hotspot hs-bench" data-views="0" style="pointer-events:none"><div class="hotspot-dot"></div></div>
+  <div class="hotspot hs-fern" data-views="0,1,2" style="pointer-events:none"><div class="hotspot-dot"></div></div>
+  <div class="hotspot hs-conserv" data-views="0,1" style="pointer-events:none"><div class="hotspot-dot"></div></div>
+  <div class="hotspot hs-bluebell" data-views="0,3" style="pointer-events:none"><div class="hotspot-dot"></div></div>
 </div>
 
 <!-- TOOLTIP -->
@@ -601,28 +601,66 @@
 <!-- BOTTOM TRAY -->
 <div id="tray">
   <button class="tray-btn" id="btn-water" onclick="setTool('water',this)">
-    <svg class="tray-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-      <path d="M12 2C12 2 5 10 5 15a7 7 0 0014 0C19 10 12 2 12 2z"/>
-      <path d="M9 18c0 1.5 1.5 2.5 3 2.5" stroke-linecap="round"/>
+    <svg class="tray-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="16" cy="18" rx="7" ry="5.5" fill="#7aaa6e"/>
+      <circle cx="23" cy="13" r="5" fill="#4a7ab5"/>
+      <ellipse cx="24.5" cy="14" rx="2.5" ry="2" fill="#f0ede4"/>
+      <rect x="22" y="12" width="5" height="1.2" rx="0.6" fill="#1a1a1a"/>
+      <circle cx="25" cy="12.5" r="0.8" fill="#1a1a1a"/>
+      <ellipse cx="14" cy="20" rx="4" ry="3.5" fill="#e8c84a"/>
+      <ellipse cx="15" cy="17" rx="5" ry="3" fill="#5a8a58" transform="rotate(-10 15 17)"/>
+      <polygon points="28,13 31,14 28,15" fill="#2a2a2a"/>
+      <polygon points="9,18 6,22 9,21 7,24 11,20" fill="#4a6e48"/>
+      <line x1="15" y1="23" x2="13" y2="27" stroke="#8a7a50" stroke-width="1"/>
+      <line x1="17" y1="23" x2="16" y2="27" stroke="#8a7a50" stroke-width="1"/>
     </svg>
     Water
   </button>
   <button class="tray-btn" id="btn-look" onclick="setTool('look',this)">
-    <svg class="tray-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-      <circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4" stroke-linecap="round"/>
+    <svg class="tray-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="16" cy="18" rx="7" ry="5.5" fill="#7aaa6e"/>
+      <circle cx="23" cy="13" r="5" fill="#4a7ab5"/>
+      <ellipse cx="24.5" cy="14" rx="2.5" ry="2" fill="#f0ede4"/>
+      <rect x="22" y="12" width="5" height="1.2" rx="0.6" fill="#1a1a1a"/>
+      <circle cx="25" cy="12.5" r="0.8" fill="#1a1a1a"/>
+      <ellipse cx="14" cy="20" rx="4" ry="3.5" fill="#e8c84a"/>
+      <ellipse cx="15" cy="17" rx="5" ry="3" fill="#5a8a58" transform="rotate(-10 15 17)"/>
+      <polygon points="28,13 31,14 28,15" fill="#2a2a2a"/>
+      <polygon points="9,18 6,22 9,21 7,24 11,20" fill="#4a6e48"/>
+      <line x1="15" y1="23" x2="13" y2="27" stroke="#8a7a50" stroke-width="1"/>
+      <line x1="17" y1="23" x2="16" y2="27" stroke="#8a7a50" stroke-width="1"/>
     </svg>
     Look
   </button>
   <button class="tray-btn" onclick="openChat('')">
-    <svg class="tray-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-      <path d="M20 2H4a2 2 0 00-2 2v12a2 2 0 002 2h6l4 4 4-4h2a2 2 0 002-2V4a2 2 0 00-2-2z"/>
+    <svg class="tray-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="16" cy="18" rx="7" ry="5.5" fill="#7aaa6e"/>
+      <circle cx="23" cy="13" r="5" fill="#4a7ab5"/>
+      <ellipse cx="24.5" cy="14" rx="2.5" ry="2" fill="#f0ede4"/>
+      <rect x="22" y="12" width="5" height="1.2" rx="0.6" fill="#1a1a1a"/>
+      <circle cx="25" cy="12.5" r="0.8" fill="#1a1a1a"/>
+      <ellipse cx="14" cy="20" rx="4" ry="3.5" fill="#e8c84a"/>
+      <ellipse cx="15" cy="17" rx="5" ry="3" fill="#5a8a58" transform="rotate(-10 15 17)"/>
+      <polygon points="28,13 31,14 28,15" fill="#2a2a2a"/>
+      <polygon points="9,18 6,22 9,21 7,24 11,20" fill="#4a6e48"/>
+      <line x1="15" y1="23" x2="13" y2="27" stroke="#8a7a50" stroke-width="1"/>
+      <line x1="17" y1="23" x2="16" y2="27" stroke="#8a7a50" stroke-width="1"/>
     </svg>
     Pearl
   </button>
   <button class="tray-btn" onclick="openEmail()">
-    <svg class="tray-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-      <polyline points="22,6 12,13 2,6"/>
+    <svg class="tray-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="16" cy="18" rx="7" ry="5.5" fill="#7aaa6e"/>
+      <circle cx="23" cy="13" r="5" fill="#4a7ab5"/>
+      <ellipse cx="24.5" cy="14" rx="2.5" ry="2" fill="#f0ede4"/>
+      <rect x="22" y="12" width="5" height="1.2" rx="0.6" fill="#1a1a1a"/>
+      <circle cx="25" cy="12.5" r="0.8" fill="#1a1a1a"/>
+      <ellipse cx="14" cy="20" rx="4" ry="3.5" fill="#e8c84a"/>
+      <ellipse cx="15" cy="17" rx="5" ry="3" fill="#5a8a58" transform="rotate(-10 15 17)"/>
+      <polygon points="28,13 31,14 28,15" fill="#2a2a2a"/>
+      <polygon points="9,18 6,22 9,21 7,24 11,20" fill="#4a6e48"/>
+      <line x1="15" y1="23" x2="13" y2="27" stroke="#8a7a50" stroke-width="1"/>
+      <line x1="17" y1="23" x2="16" y2="27" stroke="#8a7a50" stroke-width="1"/>
     </svg>
     Write
   </button>
@@ -815,6 +853,10 @@ function switchView(n) {
   });
   document.querySelectorAll('.view-dot').forEach((d, i) => {
     d.classList.toggle('active', i === n);
+  });
+  document.querySelectorAll('.hotspot').forEach(h => {
+    const views = (h.dataset.views || '0').split(',');
+    h.style.display = views.includes(String(n)) ? '' : 'none';
   });
   currentView = n;
 }
