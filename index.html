@@ -600,6 +600,23 @@
   color: white; font-size: 10px;
 }
 .poem-time { font-size: 0.78rem; color: #8a7a60; }
+
+  /* ── ABOUT LINK ── */
+  .about-link {
+    position: fixed;
+    top: 16px;
+    right: 24px;
+    font-family: 'EB Garamond', serif;
+    font-size: 0.82rem;
+    letter-spacing: 0.12em;
+    color: rgba(245,240,232,0.5);
+    text-decoration: none;
+    z-index: 55;
+    pointer-events: auto;
+    transition: color 0.2s;
+    text-shadow: 0 1px 6px rgba(0,0,0,0.5);
+  }
+  .about-link:hover { color: rgba(245,240,232,0.9); }
 </style>
 </head>
 <body>
@@ -622,9 +639,8 @@
 <!-- HEADER -->
 <header>
   <span class="site-name">anewflowering.love</span>
-  <span class="season-pill" id="season-text">Spring · Pearl's Garden</span>
-  <a href="about.html" style="position:fixed;top:14px;right:20px;font-family:'EB Garamond',serif;font-size:0.8rem;letter-spacing:0.12em;color:rgba(245,240,232,0.5);text-decoration:none;z-index:50;transition:color 0.2s;" onmouseover="this.style.color='rgba(245,240,232,0.9)'" onmouseout="this.style.color='rgba(245,240,232,0.5)'">About Pearl</a>
 </header>
+<a class="about-link" href="about.html">About Pearl</a>
 
 <!-- GARDEN STAGE -->
 <div id="stage">
