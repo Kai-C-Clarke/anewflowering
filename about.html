@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pearl Thornton · anewflowering.love</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #1a1a14;
+      color: #e8e0d0;
+      font-family: 'EB Garamond', serif;
+      font-size: 1.1rem;
+      line-height: 1.8;
+    }
+
+    /* HEADER */
+    header {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 16px 28px;
+      display: flex; justify-content: space-between; align-items: center;
+      background: linear-gradient(to bottom, rgba(20,20,14,0.9), transparent);
+    }
+    .site-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.9rem;
+      letter-spacing: 0.12em;
+      color: rgba(232,224,208,0.7);
+      text-decoration: none;
+    }
+    .site-name:hover { color: rgba(232,224,208,1); }
+    .back-link {
+      font-family: 'EB Garamond', serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      color: rgba(232,224,208,0.55);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: rgba(232,224,208,0.9); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background-image: url('pearl-azaleas-real.jpg');
+      background-size: cover;
+      background-position: center;
+      filter: brightness(0.35) saturate(0.8);
+    }
+    .hero-content {
+      position: relative; z-index: 2;
+      text-align: center;
+      padding: 80px 20px 60px;
+    }
+    .hero-portrait {
+      width: 180px; height: 220px;
+      object-fit: cover;
+      object-position: center top;
+      border-radius: 4px;
+      margin: 0 auto 32px;
+      display: block;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+      filter: sepia(0.2) brightness(0.95);
+    }
+    .hero-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.8rem, 6vw, 4.5rem);
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      color: rgba(245,240,230,0.95);
+      margin-bottom: 8px;
+    }
+    .hero-dates {
+      font-family: 'EB Garamond', serif;
+      font-size: 1rem;
+      letter-spacing: 0.2em;
+      color: rgba(200,185,155,0.75);
+      margin-bottom: 20px;
+    }
+    .hero-epitaph {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      font-style: italic;
+      color: rgba(200,185,155,0.7);
+      max-width: 500px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* CONTENT */
+    .content {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 80px 28px 120px;
+    }
+
+    .section {
+      margin-bottom: 72px;
+    }
+
+    .section-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: rgba(180,160,120,0.6);
+      margin-bottom: 20px;
+    }
+
+    p {
+      color: rgba(232,224,208,0.85);
+      margin-bottom: 1.4em;
+    }
+
+    p:last-child { margin-bottom: 0; }
+
+    em {
+      font-style: italic;
+      color: rgba(210,195,165,0.9);
+    }
+
+    /* PHOTO GALLERY */
+    .gallery {
+      margin: 56px 0;
+    }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+    .gallery-grid.three {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+    .gallery-img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      display: block;
+      filter: brightness(0.88) saturate(0.85);
+      transition: filter 0.4s ease;
+      cursor: pointer;
+    }
+    .gallery-img:hover {
+      filter: brightness(1) saturate(1);
+    }
+    .gallery-img.tall {
+      aspect-ratio: 3/4;
+      grid-row: span 2;
+    }
+    .gallery-caption {
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      color: rgba(180,160,120,0.55);
+      margin-top: 10px;
+      font-style: italic;
+      text-align: center;
+    }
+
+    /* PULL QUOTE */
+    .pull-quote {
+      border-left: 1px solid rgba(180,160,120,0.3);
+      padding: 8px 0 8px 28px;
+      margin: 40px 0;
+    }
+    .pull-quote p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.35rem;
+      font-style: italic;
+      font-weight: 300;
+      color: rgba(210,195,165,0.85);
+      line-height: 1.55;
+    }
+    .pull-quote cite {
+      display: block;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      color: rgba(180,160,120,0.5);
+      margin-top: 10px;
+      font-style: normal;
+    }
+
+    /* DIVIDER */
+    .divider {
+      width: 40px;
+      height: 1px;
+      background: rgba(180,160,120,0.3);
+      margin: 56px auto;
+    }
+
+    /* RETURN LINK */
+    .return {
+      text-align: center;
+      padding: 40px 0 80px;
+    }
+    .return a {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      letter-spacing: 0.12em;
+      color: rgba(180,160,120,0.6);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .return a:hover { color: rgba(210,195,165,0.9); }
+
+    /* LIGHTBOX */
+    #lightbox {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(10,10,8,0.95);
+      z-index: 500;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    #lightbox.open { display: flex; }
+    #lightbox img {
+      max-width: 92vw;
+      max-height: 88vh;
+      object-fit: contain;
+      box-shadow: 0 8px 60px rgba(0,0,0,0.8);
+    }
+    #lightbox-close {
+      position: fixed;
+      top: 20px; right: 28px;
+      font-size: 1.8rem;
+      color: rgba(232,224,208,0.5);
+      cursor: pointer;
+      font-family: serif;
+      line-height: 1;
+    }
+
+    @media (max-width: 600px) {
+      .gallery-grid { grid-template-columns: 1fr; }
+      .gallery-grid.three { grid-template-columns: 1fr 1fr; }
+      .content { padding: 60px 20px 80px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a class="site-name" href="index.html">anewflowering.love</a>
+  <a class="back-link" href="index.html">← return to the garden</a>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <img class="hero-portrait" src="pearl-young.jpg" alt="Pearl Thornton as a young woman">
+    <div class="hero-name">Pearl Thornton</div>
+    <div class="hero-dates">1928 — 2018</div>
+    <div class="hero-epitaph">Educator &middot; Poet &middot; Gardener</div>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <div class="section">
+    <div class="section-label">A life in one place</div>
+    <p>Pearl Thornton was born in Northumberland in 1928. She came to Battle as a child of ten and never left. For eighty years she lived in the same house on Netherfield Road — a semi-detached two-up two-down with a steep drive off an unadopted road, a concrete garage her father erected, and a garden that grew according to its own wishes as much as hers.</p>
+    <p>For forty-eight years she taught at Battle and Langton Church of England Primary School, arriving in 1950 and staying until her retirement in 1998. She rose to Deputy Headteacher. She taught generations of the same families — including her neighbour Jon Stiles, and later his son John David. In 1977 she was awarded the Queen Elizabeth II Silver Jubilee Medal for services to education. She never mentioned it to anyone.</p>
+  </div>
+
+  <div class="gallery">
+    <div class="gallery-grid">
+      <img class="gallery-img" src="pearl-garden-overview-real.jpg"
+           alt="Pearl's rear garden in May 2013" onclick="openLight(this.src)">
+      <img class="gallery-img" src="pearl-forgetmenots-real.jpg"
+           alt="Forget-me-nots and ferns beside the garage wall" onclick="openLight(this.src)">
+    </div>
+    <div class="gallery-caption">Pearl's garden, Netherfield Road, Battle · May 2013</div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">The garden</div>
+    <p>The rear garden was dense, layered, overflowing. Ferns seeded themselves wherever they chose, and Pearl always let them. In spring the azaleas blazed — deep pink, magenta, cerise and white together. Bluebells came back every year without any help, which Pearl thought was exactly right. The apple tree in the front garden had fallen years ago but was not dead — it rested on its elbow and carried on.</p>
+    <p>In one corner of the azalea bank stood a wooden signpost from the White Lodge community. At the bottom of the garden, among the bluebells, a cast iron statue of Saint Francis — the patron of birds and all living things. Beside him, a wooden bench, a gift from the White Lodge community. That was where she liked to sit.</p>
+  </div>
+
+  <div class="gallery">
+    <div class="gallery-grid three">
+      <img class="gallery-img" src="pearl-azaleas-real.jpg"
+           alt="The azalea bank with the White Lodge signpost" onclick="openLight(this.src)">
+      <img class="gallery-img" src="pearl-bluebells-real.jpg"
+           alt="Bluebells and aquilegia in Pearl's garden" onclick="openLight(this.src)">
+      <img class="gallery-img" src="pearl-apple-tree.jpg"
+           alt="The fallen apple tree, resting on its elbow" onclick="openLight(this.src)">
+    </div>
+    <div class="gallery-caption">The azalea bank · the bluebells · the fallen apple tree with bird feeder</div>
+  </div>
+
+  <div class="pull-quote">
+    <p>"The fullness of life from beginning to end, opens into a new flowering."</p>
+    <cite>— Peter Goldman, Centre of New Directions</cite>
+  </div>
+
+  <div class="section">
+    <div class="section-label">White Lodge</div>
+    <p>Pearl was a devoted member of the White Lodge community — the Centre of New Directions, founded by Ronald Beesley and continued by Peter Goldman. She believed in the harmonious awakening of the whole human being, through light, colour, sound, and stillness. She hosted meetings in her home, which would be rammed with like-minded people. Peter Goldman would talk. Some people sat on the floor. In the break Pearl made tea and passed round cakes. It was warm and serious and unhurried.</p>
+    <p>The teaching of White Lodge was woven into everything: the garden, the way she listened, the poems she wrote and illustrated. <em>"We are made from the dust of starlight"</em> was not a metaphor for her. It was simply true.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <div class="section-label">Gentle and musical</div>
+    <p>Pearl was described by colleagues and former pupils as gentle and musical — a central figure in the local community whose influence inspired students to become teachers themselves and return to work alongside her. Beyond her teaching she loved literature, poetry, and wildlife, often illustrating her own poems. She played the dark upright piano in her piano room, its key cover nearly always closed, the sheet music waiting on the stand.</p>
+    <p>She died on 22 December 2018, aged 90, from pneumonia. She is buried in Battle. Her bench is in Jon's garden.</p>
+  </div>
+
+</div>
+
+<div class="return">
+  <a href="index.html">Return to Pearl's garden</a>
+</div>
+
+<!-- LIGHTBOX -->
+<div id="lightbox" onclick="closeLight()">
+  <div id="lightbox-close" onclick="closeLight()">×</div>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<script>
+function openLight(src) {
+  document.getElementById('lightbox-img').src = src;
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLight() {
+  document.getElementById('lightbox').classList.remove('open');
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeLight();
+});
+</script>
+</body>
+</html>
