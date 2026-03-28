@@ -1014,6 +1014,8 @@ let ambientTimer;
 let visitorName = '';
 let visitorMemory = null;
 let awaitingName = false;
+let gardenContext = '';
+let visitorLocation = null;
 
 const ambientQuotes = [
   "The forget-me-nots have come back without any help. I think that's rather wonderful.",
@@ -1030,6 +1032,10 @@ function init() {
     setTimeout(() => document.getElementById('loader').remove(), 1600);
     showAmbient();
   }, 1800);
+
+  // Fetch weather & build garden context in the background
+  fetchGardenContext();
+  fetchVisitorLocation();
 
   document.addEventListener('mousemove', e => {
     const c = document.getElementById('cursor');
@@ -1073,6 +1079,9 @@ async function openChat(seed) {
     if (seed) document.getElementById('pearl-input').value = seed;
     return;
   }
+
+  // Ring first — Pearl picks up after the tone
+  await playTelephoneRing();
 
   const storedName = getStoredName();
 
@@ -1158,13 +1167,278 @@ function extractName(text) {
   return text.split(/\s+/)[0].replace(/[^a-zA-Z]/g, '') || 'dear';
 }
 
+// ── Telephone ring ────────────────────────────────────────────
+// UK landline double-ring: two short bursts, long pause.
+// Mixed 400Hz + 450Hz — the actual BT exchange tones.
+// Plays once before Pearl's first greeting.
+
+function playTelephoneRing() {
+  return new Promise(resolve => {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+      function makeRinger() {
+        const osc1 = ctx.createOscillator();
+        const osc2 = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc1.type = 'sine';
+        osc1.frequency.value = 400;
+        osc2.type = 'sine';
+        osc2.frequency.value = 450;
+
+        osc1.connect(gain);
+        osc2.connect(gain);
+        gain.connect(ctx.destination);
+        gain.gain.value = 0;
+
+        return { osc1, osc2, gain };
+      }
+
+      // One ring burst: fade in, hold, fade out
+      function ring(startTime, duration) {
+        const { osc1, osc2, gain } = makeRinger();
+        const fadeTime = 0.04;
+        gain.gain.setValueAtTime(0, startTime);
+        gain.gain.linearRampToValueAtTime(0.18, startTime + fadeTime);
+        gain.gain.setValueAtTime(0.18, startTime + duration - fadeTime);
+        gain.gain.linearRampToValueAtTime(0, startTime + duration);
+        osc1.start(startTime);
+        osc2.start(startTime);
+        osc1.stop(startTime + duration);
+        osc2.stop(startTime + duration);
+      }
+
+      // UK double-ring pattern (fits in ~5/4 feel):
+      // ring 0.4s — gap 0.2s — ring 0.4s — pause 1.8s  (total ~2.8s)
+      const t = ctx.currentTime + 0.1;
+      ring(t,        0.4);   // first burst
+      ring(t + 0.6,  0.4);   // second burst
+      // Long pause — then one more double ring for effect
+      ring(t + 1.8,  0.4);
+      ring(t + 2.4,  0.4);
+
+      // Resolve after the ringing ends
+      setTimeout(() => {
+        ctx.close();
+        resolve();
+      }, (t - ctx.currentTime + 3.0) * 1000);
+
+    } catch(e) {
+      // AudioContext not available — just resolve immediately
+      resolve();
+    }
+  });
+}
+
+// ── Visitor location ──────────────────────────────────────────
+
+async function fetchVisitorLocation() {
+  try {
+    const res = await fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout(5000) });
+    if (!res.ok) return;
+    const d = await res.json();
+
+    // Work out visitor's local time from their timezone
+    let localTimeStr = '';
+    let localHour = null;
+    try {
+      const localTime = new Date().toLocaleString('en-GB', { timeZone: d.timezone, hour: '2-digit', minute: '2-digit', hour12: false });
+      localTimeStr = localTime;
+      localHour = parseInt(localTime.split(':')[0]);
+    } catch(e) {}
+
+    const isUK = d.country_code === 'GB';
+    const city = d.city || '';
+    const country = d.country_name || '';
+    const continent = d.continent_code || '';
+
+    // Pearl's sense of where the call is coming from
+    let locationNote = '';
+    if (isUK) {
+      if (city) locationNote = `The visitor is calling from ${city}, here in Britain.`;
+      else locationNote = `The visitor is calling from somewhere in Britain.`;
+    } else {
+      locationNote = `The visitor is calling from ${city ? city + ', ' : ''}${country} — all that way.`;
+    }
+
+    // What time is it for them?
+    let theirTimeNote = '';
+    if (localHour !== null && !isUK) {
+      if (localHour < 5) {
+        theirTimeNote = `For them it is ${localTimeStr} — the small hours of the morning. Pearl finds it touching that someone would reach out at such an hour.`;
+      } else if (localHour < 8) {
+        theirTimeNote = `For them it is ${localTimeStr} — very early morning. They may have just woken, or not yet slept.`;
+      } else if (localHour < 12) {
+        theirTimeNote = `For them it is ${localTimeStr} — morning.`;
+      } else if (localHour < 14) {
+        theirTimeNote = `For them it is ${localTimeStr} — around lunchtime.`;
+      } else if (localHour < 18) {
+        theirTimeNote = `For them it is ${localTimeStr} — afternoon.`;
+      } else if (localHour < 21) {
+        theirTimeNote = `For them it is ${localTimeStr} — evening.`;
+      } else {
+        theirTimeNote = `For them it is ${localTimeStr} — quite late in the evening.`;
+      }
+    }
+
+    // Pearl's wonder at the reach of it — like that old phone connecting to the world
+    let wonderNote = '';
+    if (!isUK) {
+      const wonders = {
+        'NA': "Pearl is quietly astonished that someone in North America has found their way to her garden — she thinks of it rather like receiving a long-distance telephone call, crackling and warm.",
+        'SA': "Someone calling from South America — Pearl finds this extraordinary and rather wonderful.",
+        'AU': "Australia — Pearl always finds it remarkable that the world can be so connected. She thinks of the distance involved.",
+        'AS': "Pearl is gently moved that someone from so far east has found their way to the garden.",
+        'AF': "Someone calling from Africa — Pearl finds this quietly remarkable.",
+        'EU': "A visitor from Europe — perhaps not so very far, but Pearl always finds it touching when someone crosses even a small distance to sit in the garden.",
+      };
+      wonderNote = wonders[continent] || "Pearl is quietly moved that someone so far away has found their way to her garden.";
+    }
+
+    visitorLocation = { city, country, isUK, localTimeStr, localHour, locationNote, theirTimeNote, wonderNote };
+
+  } catch(e) {
+    // Silently fail — Pearl simply won't know where they're calling from
+  }
+}
+
+// ── Weather & garden context ──────────────────────────────────
+
+async function fetchGardenContext() {
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  const month = now.getMonth(); // 0=Jan
+  const hour = now.getHours();
+  const timeStr = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+
+  const timeOfDay = hour < 6
+    ? `It is ${timeStr} — the middle of the night.`
+    : hour < 9
+    ? `It is ${timeStr} — early morning.`
+    : hour < 12
+    ? `It is ${timeStr} — mid morning.`
+    : hour < 14
+    ? `It is ${timeStr} — around lunchtime.`
+    : hour < 17
+    ? `It is ${timeStr} — afternoon.`
+    : hour < 20
+    ? `It is ${timeStr} — early evening.`
+    : hour < 22
+    ? `It is ${timeStr} — evening.`
+    : `It is ${timeStr} — late at night.`;
+
+  const timeGreeting = hour < 6
+    ? "If someone visits at this hour, Pearl notices gently — with warmth and a little concern, not alarm. She might say something like 'My goodness, you are up late — is everything alright, dear?' or 'I couldn't sleep either.' She does not make a fuss but she does notice."
+    : hour < 12
+    ? "Pearl greets morning visitors warmly. She may have been in the garden already — deadheading, or simply standing with her tea looking at what the night has done."
+    : hour < 17
+    ? "Pearl is at her most settled in the afternoon — unhurried, ready to sit and talk."
+    : hour < 21
+    ? "The evening light is Pearl's favourite. She may mention the swallows, or the way the shadows fall across the lawn."
+    : "Pearl is a late-to-bed person, but midnight visitors are unusual. She notices, gently.";
+
+
+  // What's in Pearl's garden by month
+  const gardenNotes = [
+    // Jan
+    "The garden is bare and resting. Snowdrops are just beginning to push through near the bench. The robins are very bold at this time of year — they follow you round the garden when you dig. The hellebores are opening quietly under the hedge.",
+    // Feb
+    "Snowdrops are out in drifts under the apple tree. The first crocuses are showing — purple and yellow near the path. It's still cold but there's a feeling of something about to happen. The birds are beginning to sing earlier each morning.",
+    // Mar
+    "The daffodils are coming on well along the back fence. The forsythia is blazing yellow — almost too bright. Primroses are out in the shady corner. The birds are very busy — the blackbirds have started nest-building in the pyracantha.",
+    // Apr
+    "The azaleas are coming into their best — deep pink, magenta, cerise, white. The forget-me-nots are a blue haze on the mossy lawn. Bluebells under Saint Francis. The conservatory clematis is in full flower up the outside wall. Everything is rushing now.",
+    // May
+    "The azaleas are finishing but the rhododendrons are taking over — great purple and red heads. The roses are beginning to bud. The garden smells wonderful in the evening. There are blue tits nesting in the box on the garage wall — you can hear them squeaking.",
+    // Jun
+    "The roses are at their best. The old pink climber on the back fence is extraordinary this year. The lawn needs mowing — it always gets away from you in June. The conservatory is full of heat and the smell of geraniums. Long evenings — it doesn't get dark until after nine.",
+    // Jul
+    "High summer. The garden is a little tired — the azaleas long finished, the roses beginning to repeat. The lavender is wonderful, full of bees all day. There's weeding to do — there's always weeding to do. The swallows are overhead in the evenings.",
+    // Aug
+    "Late summer. The hydrangeas are magnificent — great white and blue heads. The fuchsias are dripping. The apples are beginning to swell on the tree. Wasps are a nuisance near the fruit. The evenings are shortening — you notice it suddenly, one day.",
+    // Sep
+    "The garden is turning. The first leaves coming down from the cherry. The Japanese anemones are flowering beautifully — white and pale pink. The dahlias are still going. A mellow, melancholy feeling — lovely and a little sad at the same time.",
+    // Oct
+    "Autumn proper now. The camellias have set their buds for spring — it always seems too early to believe them. Leaves to sweep — the bench is buried. The robins are very visible again, singing from the top of the hedge. The garden feels quieter.",
+    // Nov
+    "The garden is putting itself to bed. The last of the dahlias are blackened by frost. The ferns are brown and beaten. But the mahonia is just coming into flower — small yellow sprigs that smell of lily of the valley. There's satisfaction in a bare garden.",
+    // Dec
+    "Midwinter. Frost on the lawn most mornings. The holly berries are very red this year. The witch hazel by the back wall is just beginning to open — spidery yellow flowers on bare wood. The garden is quiet but not empty — the birds are always there."
+  ];
+
+  const seasonalTask = [
+    "There's not much to do outside in this cold — perhaps check the pots haven't frozen.",
+    "A good day to tidy the borders if the ground isn't frozen. Check on the bulbs.",
+    "Time to divide the snowdrops if you haven't already. Plenty of weeding starting up.",
+    "Deadhead the daffodils as they go over. Don't cut the leaves yet — let them die back.",
+    "Keep on top of the weeds — they're racing ahead now. Water if it stays dry.",
+    "Deadhead the roses and they'll keep going all summer. The lawn needs regular mowing.",
+    "Water in the evenings. Keep deadheading. The garden asks a lot of you in July.",
+    "Same as July — water, deadhead, watch for blackfly on the dahlias.",
+    "Cut back the tired summer things. Plant spring bulbs — tulips especially.",
+    "Finish planting the spring bulbs. Rake the leaves before they smother the lawn.",
+    "Clear the borders, cut back the dahlias, put a mulch on the roses.",
+    "Not much to do. Feed the birds. Watch. Rest, as the garden does."
+  ];
+
+  let weather = '';
+  try {
+    const res = await fetch('https://wttr.in/Battle,East+Sussex?format=j1', { signal: AbortSignal.timeout(5000) });
+    if (res.ok) {
+      const w = await res.json();
+      const cur = w.current_condition[0];
+      const desc = cur.weatherDesc[0].value.toLowerCase();
+      const tempC = cur.temp_C;
+      const feelsC = cur.FeelsLikeC;
+      const windKph = cur.windspeedKmph;
+      const humidity = cur.humidity;
+
+      weather = `The weather in Battle today: ${desc}, ${tempC}°C (feels like ${feelsC}°C), wind ${windKph} km/h, humidity ${humidity}%.`;
+
+      // Add Pearl-flavoured weather observation
+      const t = parseInt(tempC);
+      if (desc.includes('snow')) weather += " There has been snow — extraordinary for Battle.";
+      else if (desc.includes('blizzard')) weather += " A proper winter storm.";
+      else if (desc.includes('thunder')) weather += " Thunder about — best to stay in.";
+      else if (desc.includes('rain') || desc.includes('drizzle')) weather += " It's a wet day — the garden will be grateful.";
+      else if (desc.includes('overcast') || desc.includes('cloudy')) weather += " Grey skies, but dry enough to be outside.";
+      else if (desc.includes('sunny') || desc.includes('clear')) weather += " A beautiful clear day — the garden looks its best in this light.";
+      else if (desc.includes('fog') || desc.includes('mist')) weather += " Misty this morning — the garden looks like a watercolour.";
+      if (t <= 0) weather += " Freezing — frost on everything.";
+      else if (t <= 5) weather += " Very cold.";
+      else if (t >= 25) weather += " Quite warm — unusual for East Sussex.";
+    }
+  } catch(e) {
+    weather = "The weather today is not known — the connection to the outside world is quiet.";
+  }
+
+  gardenContext = `Today is ${dateStr}. ${timeOfDay}\n${weather}\n\nWhat is in Pearl's garden right now:\n${gardenNotes[month]}\n\nGarden task for the season: ${seasonalTask[month]}\n\n${timeGreeting}\n\nLet this awareness inform your conversation naturally — not as a report, but as the background of your day. You might mention what you've been doing in the garden, what you noticed this morning, what the light is like. Pearl is always aware of her garden and always aware of the time.`;
+}
+
 function buildSystemPrompt() {
   let system = PEARL_SYSTEM;
+
+  if (gardenContext) {
+    system += `\n\n${gardenContext}`;
+  }
+
+  if (visitorLocation) {
+    const loc = visitorLocation;
+    system += `\n\nABOUT THIS VISITOR'S LOCATION:\n${loc.locationNote}`;
+    if (loc.theirTimeNote) system += ` ${loc.theirTimeNote}`;
+    if (loc.wonderNote)    system += `\n${loc.wonderNote}`;
+    if (!loc.isUK) {
+      system += `\nPearl may gently acknowledge where they are calling from — with warmth and wonder, not a fuss. She might say something like "All the way from ${loc.country} — how extraordinary" or simply let the warmth of the distance colour how she speaks. She never makes a visitor feel foreign — just far away and welcome.`;
+    }
+  }
+
   if (visitorMemory && visitorName) {
     system += `\n\nYou know ${visitorName}. They have visited ${visitorMemory.visitCount} time${visitorMemory.visitCount !== 1 ? 's' : ''} before. Your memory of them:\n"${visitorMemory.summary}"\nLet this colour how you speak — gently, naturally. You may acknowledge something you remember, or simply let it warm your manner toward them.`;
   } else if (visitorName) {
     system += `\n\nThe visitor has just introduced themselves as ${visitorName}. Welcome them warmly by name.`;
   }
+
   return system;
 }
 
