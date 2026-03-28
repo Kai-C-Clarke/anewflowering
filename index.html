@@ -1156,15 +1156,34 @@ async function askPearl(system, history) {
 }
 
 function extractName(text) {
+  // Strip common conversational phrases before/after names
+  const cleaned = text
+    .replace(/\bfrom\s+(next\s*door|down\s*the\s*(road|lane|street)|over\s*the\s*(road|way)|the\s+\w+)\b/gi, '')
+    .replace(/\b(next\s*door|down\s*the\s*(road|lane|street)|over\s*the\s*(road|way))\b/gi, '')
+    .trim();
+
   const patterns = [
-    /(?:i['']?m|it['']?s|my name is|they call me|call me)\s+([A-Z][a-z]+(?:\s[A-Z][a-z]+)?)/i,
-    /^([A-Z][a-z]+(?:\s[A-Z][a-z]+)?)[\s.,!]*$/
+    // "I'm Jon", "It's Margaret", "My name is Ada", "They call me Dave"
+    /(?:i['']?m|it['']?s|my name is|they call me|call me|this is)\s+([A-Z][a-z]+(?:\s[A-Z][a-z]+)?)/i,
+    // "Jon from next door" — grab first capitalised word only
+    /^([A-Z][a-z]+)/,
+    // Just a plain name on its own line
+    /^([A-Za-z][a-z]+(?:\s[A-Z][a-z]+)?)[\s.,!]*$/
   ];
+
   for (const p of patterns) {
-    const m = text.match(p);
-    if (m) return m[1].trim();
+    const m = cleaned.match(p) || text.match(p);
+    if (m) {
+      // Take only the first name-word — stop at any lowercase connector
+      const candidate = m[1].trim().split(/\s+/);
+      const name = candidate.filter(w => /^[A-Z]/.test(w)).join(' ');
+      if (name && name.length > 1) return name;
+    }
   }
-  return text.split(/\s+/)[0].replace(/[^a-zA-Z]/g, '') || 'dear';
+
+  // Last resort — first word, capitalised, letters only
+  const first = text.trim().split(/\s+/)[0].replace(/[^a-zA-Z]/g, '');
+  return first.length > 1 ? first.charAt(0).toUpperCase() + first.slice(1).toLowerCase() : 'dear';
 }
 
 // ── Telephone ring & pickup ───────────────────────────────────
