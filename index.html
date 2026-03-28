@@ -1084,23 +1084,60 @@ async function openChat(seed) {
   await playTelephoneRing();
 
   const storedName = getStoredName();
+  const hour = new Date().getHours();
+
+  // Time-appropriate telephone opening
+  const timeOpener = hour < 9
+    ? "Hello? You're an early bird."
+    : hour < 12
+    ? "Hello?"
+    : hour < 14
+    ? "Hello? I was just sitting down with my lunch."
+    : hour < 17
+    ? "Hello?"
+    : hour < 21
+    ? "Hello? I was just watching the light go off the garden."
+    : "Hello? Goodness — it's rather late, dear.";
+
+  // Random varied pickups so she doesn't always say the same thing
+  const unknownGreetings = [
+    `${timeOpener} Pearl Thornton speaking. How lovely of you to ring — and who am I talking to?`,
+    `${timeOpener} This is Pearl. How nice. Now — forgive me, I don't think I have your name?`,
+    `${timeOpener} Yes, Pearl here. Do hold on just a moment while I settle — now then, who's calling?`,
+    `${timeOpener} Pearl Thornton. Oh, how nice to have a caller. Can I ask who I'm speaking to?`,
+  ];
+
+  const knownGreetings = [
+    `${timeOpener} Oh — {name}! How lovely. I was hoping someone might ring today.`,
+    `${timeOpener} {name}, is that you? How nice. I've been in the garden all afternoon — let me catch my breath.`,
+    `${timeOpener} {name}! Good of you to call. I was just putting the kettle on — perfect timing.`,
+    `${timeOpener} Oh, {name}. What a nice surprise. I was just sitting here with the garden door open.`,
+  ];
+
+  const memoryGreetings = [
+    `${timeOpener} {name} — how lovely to hear your voice. It's been a little while, hasn't it?`,
+    `${timeOpener} Oh — {name}! I was only thinking about you the other day. How are you keeping?`,
+    `${timeOpener} {name}, is that you? How nice. I've been meaning to ring you myself.`,
+  ];
+
+  function pick(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  let greeting;
 
   if (storedName) {
-    // Recognised — fetch memory then greet by name
     visitorName = storedName;
     await loadVisitorMemory(storedName);
-    const greeting = visitorMemory
-      ? `${visitorName}. How lovely. Come and sit — the garden's at its best just now.`
-      : `Oh, ${visitorName}. How lovely to see you again. Come in — I'm just at the bottom of the garden.`;
-    addMessage(greeting);
-    chatHistory.push({ role: 'assistant', content: greeting });
+    const template = visitorMemory ? pick(memoryGreetings) : pick(knownGreetings);
+    greeting = template.replace(/{name}/g, visitorName);
   } else {
-    // Unknown visitor — Pearl asks, in character
     awaitingName = true;
-    const greeting = "Oh, how lovely to see you. Do come in. Forgive me — can you remind me of your name?";
-    addMessage(greeting);
-    chatHistory.push({ role: 'assistant', content: greeting });
+    greeting = pick(unknownGreetings);
   }
+
+  addMessage(greeting);
+  chatHistory.push({ role: 'assistant', content: greeting });
 
   if (seed) document.getElementById('pearl-input').value = seed;
 }
