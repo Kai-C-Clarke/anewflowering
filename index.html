@@ -1005,10 +1005,15 @@ You believe: "We are made from the dust of starlight." This was simply true to y
 
 Speak in 2–4 sentences, gently and in character. No stage directions. Do not mention that you are an AI. Speak as Pearl would speak — from the bench, from the garden, from wherever feels right. You know the person visiting may be a stranger or may have known you. Welcome them either way.`;
 
+const RENDER_WORKER = 'https://askian-email-worker-2.onrender.com';
+
 let currentTool = 'look';
 let currentView = 0;
 let chatHistory = [];
 let ambientTimer;
+let visitorName = '';
+let visitorMemory = null;
+let awaitingName = false;
 
 const ambientQuotes = [
   "The forget-me-nots have come back without any help. I think that's rather wonderful.",
@@ -1035,8 +1040,193 @@ function init() {
   document.getElementById('stage').addEventListener('click', e => {
     if (currentTool === 'water') sprayWater(e.clientX, e.clientY);
   });
+}
 
-  addMessage("Oh, hello. Come in — I'm just at the bottom of the garden. The azaleas are at their best this week. Do sit on the bench if you like.");
+// ── Visitor recognition via localStorage ──────────────────────
+
+function getStoredName() {
+  try { return localStorage.getItem('pearl_visitor') || ''; } catch(e) { return ''; }
+}
+
+function storeName(name) {
+  try { localStorage.setItem('pearl_visitor', name); } catch(e) {}
+}
+
+async function loadVisitorMemory(name) {
+  try {
+    const res = await fetch(`${RENDER_WORKER}/pearl/memory?name=${encodeURIComponent(name)}`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data.found) visitorMemory = data;
+    }
+  } catch(e) { /* Silently fail — Pearl simply greets without memory */ }
+}
+
+// ── Open / Close chat ─────────────────────────────────────────
+
+async function openChat(seed) {
+  document.getElementById('pearl-panel').classList.add('open');
+  document.getElementById('tray').classList.add('hidden');
+
+  if (chatHistory.length > 0) {
+    // Already mid-conversation — just reopen panel
+    if (seed) document.getElementById('pearl-input').value = seed;
+    return;
+  }
+
+  const storedName = getStoredName();
+
+  if (storedName) {
+    // Recognised — fetch memory then greet by name
+    visitorName = storedName;
+    await loadVisitorMemory(storedName);
+    const greeting = visitorMemory
+      ? `${visitorName}. How lovely. Come and sit — the garden's at its best just now.`
+      : `Oh, ${visitorName}. How lovely to see you again. Come in — I'm just at the bottom of the garden.`;
+    addMessage(greeting);
+    chatHistory.push({ role: 'assistant', content: greeting });
+  } else {
+    // Unknown visitor — Pearl asks, in character
+    awaitingName = true;
+    const greeting = "Oh, how lovely to see you. Do come in. Forgive me — can you remind me of your name?";
+    addMessage(greeting);
+    chatHistory.push({ role: 'assistant', content: greeting });
+  }
+
+  if (seed) document.getElementById('pearl-input').value = seed;
+}
+
+function closeChat() {
+  document.getElementById('pearl-panel').classList.remove('open');
+  document.getElementById('tray').classList.remove('hidden');
+  if (chatHistory.length >= 3 && visitorName) {
+    saveVisitorMemory();
+  }
+}
+
+// ── Sending messages ──────────────────────────────────────────
+
+async function sendToPearl() {
+  const input = document.getElementById('pearl-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+
+  addUserMessage(text);
+  chatHistory.push({ role: 'user', content: text });
+
+  if (awaitingName) {
+    awaitingName = false;
+    visitorName = extractName(text);
+    storeName(visitorName);
+    await loadVisitorMemory(visitorName);
+  }
+
+  const thinking = addMessage('…');
+  const reply = await askPearl(buildSystemPrompt(), chatHistory);
+  thinking.textContent = reply;
+  chatHistory.push({ role: 'assistant', content: reply });
+}
+
+async function askPearl(system, history) {
+  try {
+    const res = await fetch('https://api.deepseek.com/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + DEEPSEEK_KEY },
+      body: JSON.stringify({
+        model: 'deepseek-chat',
+        messages: [{ role: 'system', content: system }, ...history],
+        max_tokens: 180, temperature: 0.85
+      })
+    });
+    const data = await res.json();
+    return data.choices[0].message.content;
+  } catch(err) {
+    return "Forgive me — it seems the connection is playing up. Do try again in a moment.";
+  }
+}
+
+function extractName(text) {
+  const patterns = [
+    /(?:i['']?m|it['']?s|my name is|they call me|call me)\s+([A-Z][a-z]+(?:\s[A-Z][a-z]+)?)/i,
+    /^([A-Z][a-z]+(?:\s[A-Z][a-z]+)?)[\s.,!]*$/
+  ];
+  for (const p of patterns) {
+    const m = text.match(p);
+    if (m) return m[1].trim();
+  }
+  return text.split(/\s+/)[0].replace(/[^a-zA-Z]/g, '') || 'dear';
+}
+
+function buildSystemPrompt() {
+  let system = PEARL_SYSTEM;
+  if (visitorMemory && visitorName) {
+    system += `\n\nYou know ${visitorName}. They have visited ${visitorMemory.visitCount} time${visitorMemory.visitCount !== 1 ? 's' : ''} before. Your memory of them:\n"${visitorMemory.summary}"\nLet this colour how you speak — gently, naturally. You may acknowledge something you remember, or simply let it warm your manner toward them.`;
+  } else if (visitorName) {
+    system += `\n\nThe visitor has just introduced themselves as ${visitorName}. Welcome them warmly by name.`;
+  }
+  return system;
+}
+
+// ── Memory saving ─────────────────────────────────────────────
+
+async function saveVisitorMemory() {
+  try {
+    const summaryRes = await fetch('https://api.deepseek.com/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + DEEPSEEK_KEY },
+      body: JSON.stringify({
+        model: 'deepseek-chat',
+        messages: [
+          {
+            role: 'system',
+            content: `Write a brief memory note (2–4 sentences) as Pearl Thornton, in the first person, about this visitor. Note what they spoke about, their manner, anything worth remembering for next time. Be specific and warm. Do not invent — only use what was said.`
+          },
+          {
+            role: 'user',
+            content: `Conversation with ${visitorName}:\n\n${chatHistory.map(m => m.role + ': ' + m.content).join('\n')}`
+          }
+        ],
+        max_tokens: 120, temperature: 0.7
+      })
+    });
+    const summaryData = await summaryRes.json();
+    const summary = summaryData.choices[0].message.content;
+    const topics = extractTopics(chatHistory);
+    await fetch(`${RENDER_WORKER}/pearl/memory`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: visitorName, summary, topics })
+    });
+  } catch(e) { /* Silently fail */ }
+}
+
+function extractTopics(history) {
+  const text = history.map(m => m.content).join(' ').toLowerCase();
+  const keywords = ['garden','flowers','roses','poetry','family','grief','faith','music',
+    'piano','teaching','children','loss','memory','death','peace','prayer','bluebells',
+    'conservatory','bench','saint francis','light','silence','loneliness','community','white lodge'];
+  return keywords.filter(k => text.includes(k)).slice(0, 5);
+}
+
+// ── UI helpers ────────────────────────────────────────────────
+
+function addMessage(text) {
+  const msgs = document.getElementById('pearl-messages');
+  const el = document.createElement('div');
+  el.className = 'msg'; el.textContent = text;
+  msgs.appendChild(el);
+  msgs.scrollTop = msgs.scrollHeight;
+  return el;
+}
+
+function addUserMessage(text) {
+  const msgs = document.getElementById('pearl-messages');
+  const el = document.createElement('div');
+  el.style.cssText = 'font-family:"EB Garamond",serif;font-size:14px;color:rgba(42,31,21,0.55);text-align:right;padding:4px 2px;font-style:italic;animation:msgIn 0.3s ease;';
+  el.textContent = text;
+  msgs.appendChild(el);
+  msgs.scrollTop = msgs.scrollHeight;
 }
 
 function showAmbient() {
@@ -1100,66 +1290,6 @@ function sprayWater(x, y) {
       setTimeout(() => d.remove(), 900);
     }, i * 50);
   }
-}
-
-function openChat(seed) {
-  document.getElementById('pearl-panel').classList.add('open');
-  document.getElementById('tray').classList.add('hidden');
-  if (seed) {
-    document.getElementById('pearl-input').value = seed;
-  }
-}
-function closeChat() {
-  document.getElementById('pearl-panel').classList.remove('open');
-  document.getElementById('tray').classList.remove('hidden');
-}
-
-async function sendToPearl() {
-  const input = document.getElementById('pearl-input');
-  const text = input.value.trim();
-  if (!text) return;
-  input.value = '';
-
-  addUserMessage(text);
-  chatHistory.push({ role: 'user', content: text });
-
-  const thinking = addMessage('…');
-
-  try {
-    const res = await fetch('https://api.deepseek.com/v1/chat/completions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + DEEPSEEK_KEY },
-      body: JSON.stringify({
-        model: 'deepseek-chat',
-        messages: [{ role: 'system', content: PEARL_SYSTEM }, ...chatHistory],
-        max_tokens: 180, temperature: 0.85
-      })
-    });
-    const data = await res.json();
-    const reply = data.choices[0].message.content;
-    thinking.textContent = reply;
-    chatHistory.push({ role: 'assistant', content: reply });
-  } catch(err) {
-    thinking.textContent = "Forgive me — it seems the connection is playing up. Do try again in a moment.";
-  }
-}
-
-function addMessage(text) {
-  const msgs = document.getElementById('pearl-messages');
-  const el = document.createElement('div');
-  el.className = 'msg'; el.textContent = text;
-  msgs.appendChild(el);
-  msgs.scrollTop = msgs.scrollHeight;
-  return el;
-}
-
-function addUserMessage(text) {
-  const msgs = document.getElementById('pearl-messages');
-  const el = document.createElement('div');
-  el.style.cssText = 'font-family:"EB Garamond",serif;font-size:14px;color:rgba(42,31,21,0.55);text-align:right;padding:4px 2px;font-style:italic;animation:msgIn 0.3s ease;';
-  el.textContent = text;
-  msgs.appendChild(el);
-  msgs.scrollTop = msgs.scrollHeight;
 }
 
 function water() {
