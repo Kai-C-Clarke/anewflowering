@@ -1362,15 +1362,16 @@ function playTelephoneRing() {
         osc1.stop(startTime + duration); osc2.stop(startTime + duration);
       }
 
-      // UK double-ring: burst — gap — burst — pause — burst — gap — burst
+      // UK double-ring: Ring(0.4) gap(0.2) Ring(0.4) --- pause(2.0) --- Ring(0.4) gap(0.2) Ring(0.4)
       const t = ctx.currentTime + 0.1;
-      ring(t,       0.4);
-      ring(t + 0.6, 0.4);
-      ring(t + 1.8, 0.4);
-      ring(t + 2.4, 0.4);
+      ring(t,        0.4);   // Ring 1
+      ring(t + 0.6,  0.4);   // Ring 2  (0.2s gap)
+      // long pause of 2.0s
+      ring(t + 3.0,  0.4);   // Ring 3
+      ring(t + 3.6,  0.4);   // Ring 4  (0.2s gap)
 
       // After ringing: pickup sound, then resolve
-      const ringDuration = 3.0;
+      const ringDuration = 4.2;
       setTimeout(async () => {
         await playPickup(ctx);
         ctx.close();
