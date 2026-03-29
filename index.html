@@ -1113,9 +1113,21 @@ async function openChat(seed) {
     `${timeOpener} Pearl Thornton. Oh, how nice to have a caller. Can I ask who I'm speaking to?`,
   ];
 
+  const gardenActivity = hour < 9
+    ? "I was up very early — the garden looked beautiful in the first light."
+    : hour < 12
+    ? "I've been in the garden this morning — let me catch my breath."
+    : hour < 14
+    ? "I was just sitting down with my lunch."
+    : hour < 17
+    ? "I've been in the garden all afternoon — let me catch my breath."
+    : hour < 21
+    ? "I was just watching the light go off the garden."
+    : "I was just settling down for the evening.";
+
   const knownGreetings = [
     `${timeOpener} Oh — {name}! How lovely. I was hoping someone might ring today.`,
-    `${timeOpener} {name}, is that you? How nice. I've been in the garden all afternoon — let me catch my breath.`,
+    `${timeOpener} {name}, is that you? How nice. ${gardenActivity}`,
     `${timeOpener} {name}! Good of you to call. I was just putting the kettle on — perfect timing.`,
     `${timeOpener} Oh, {name}. What a nice surprise. I was just sitting here with the garden door open.`,
   ];
