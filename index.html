@@ -3,522 +3,1824 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Millham Green — Everyone's very friendly. At first.</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<meta name="language" content="English">
+<meta http-equiv="content-language" content="en">
+<meta name="description" content="Pearl Thornton's garden in Battle, East Sussex — a place of memory, poetry, and quiet reflection.">
+<meta name="keywords" content="Pearl Thornton, English garden, poetry, memory, Battle East Sussex, remembrance, flowers, azaleas, bluebells, Saint Francis, White Lodge, anewflowering">
+<!-- Baidu Webmaster Tools verification — replace PASTE_YOUR_CODE_HERE after registering at ziyuan.baidu.com -->
+<!-- <meta name="baidu-site-verification" content="PASTE_YOUR_CODE_HERE"> -->
+<title>Pearl's Garden · anewflowering.love</title>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=EB+Garamond:ital,wght@0,400;1,400&display=swap');
+
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --cream: #f4f0e6;
-    --parchment: #e8e0cc;
-    --ink: #1a1208;
-    --faded-ink: #3d3020;
-    --green-dark: #2c3d2a;
-    --green-mid: #4a6647;
-    --church-grey: #8a8278;
-    --pond-blue: #6b8ea6;
+    --cream: #F5F0E8;
+    --sage: #7A9478;
+    --bark: #5A3E2B;
+    --petal: #D4527E;
+    --stone: rgba(245,240,232,0.92);
+    --ink: #2A1F15;
   }
 
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--cream);
-    color: var(--ink);
+  html, body {
+    width: 100%; height: 100%;
+    background: #1a1a15;
     font-family: 'EB Garamond', Georgia, serif;
-    font-size: 18px;
-    line-height: 1.7;
-    overflow-x: hidden;
-  }
-
-  /* ─── HERO ─────────────────────────────────────── */
-  .hero {
-    position: relative;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    color: var(--cream);
     overflow: hidden;
-    background: var(--green-dark);
   }
 
-  .hero-image {
-    position: absolute;
-    inset: 0;
-    background:
-      linear-gradient(to bottom,
-        rgba(26,18,8,0.15) 0%,
-        rgba(26,18,8,0.0) 30%,
-        rgba(26,18,8,0.4) 70%,
-        rgba(26,18,8,0.88) 100%
-      ),
-      /* ── SWAP for Grok image: url('images/millham-green-village.jpg') ── */
-      url('images/millham-green-village.jpg');
-    background-size: cover;
-    background-position: center 55%;
-    will-change: transform;
+  /* ── HEADER ── */
+  header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    padding: 18px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: linear-gradient(180deg, rgba(0,0,0,0.55) 0%, transparent 100%);
+    pointer-events: none;
   }
-
-  .hero-image::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    opacity: 0.5;
+  .site-name {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 300; font-size: 18px; letter-spacing: 2px;
+    color: rgba(245,240,232,0.9);
+    text-shadow: 0 1px 8px rgba(0,0,0,0.6);
+  }
+  .season-pill {
+    font-size: 12px; letter-spacing: 1.5px;
+    color: rgba(245,240,232,0.75);
+    text-shadow: 0 1px 6px rgba(0,0,0,0.5);
     pointer-events: none;
   }
 
-  .hero-content {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-    padding: 2rem;
-    max-width: 780px;
+  /* ── GARDEN STAGE ── */
+  #stage {
+    position: fixed; inset: 0;
+    cursor: none;
   }
 
-  .village-name {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: clamp(3rem, 10vw, 7rem);
-    font-weight: 400;
-    color: var(--cream);
-    letter-spacing: 0.02em;
-    line-height: 1;
-    margin-bottom: 0.3em;
-    text-shadow: 0 2px 20px rgba(0,0,0,0.4);
-    opacity: 0;
-    animation: fadeUp 1.4s ease forwards 0.3s;
+  .garden-img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: opacity 1.8s ease;
   }
+  .garden-img.hidden { opacity: 0; }
 
-  .village-rule {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    justify-content: center;
-    margin: 0.8rem 0 1.4rem;
-    opacity: 0;
-    animation: fadeUp 1.2s ease forwards 0.8s;
-  }
-
-  .village-rule span {
-    height: 1px;
-    width: 80px;
-    background: linear-gradient(to right, transparent, rgba(244,240,230,0.5), transparent);
-  }
-
-  .village-rule em {
-    font-family: 'EB Garamond', serif;
-    font-style: italic;
-    color: rgba(244,240,230,0.6);
-    font-size: 0.85rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-  }
-
-  .tagline {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-style: italic;
-    font-size: clamp(1.1rem, 3vw, 1.6rem);
-    color: rgba(244,240,230,0.92);
-    line-height: 1.4;
-    text-shadow: 0 1px 8px rgba(0,0,0,0.3);
-    opacity: 0;
-    animation: fadeUp 1.2s ease forwards 1.2s;
-  }
-
-  .tagline strong { color: var(--cream); font-weight: 400; }
-
-  .hero-scroll {
-    position: absolute;
-    bottom: 2.5rem;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 2;
-    opacity: 0;
-    animation: fadeIn 1s ease forwards 2.5s;
-  }
-
-  .hero-scroll span {
-    display: block;
-    width: 1px;
-    height: 50px;
-    background: linear-gradient(to bottom, rgba(244,240,230,0), rgba(244,240,230,0.6));
-    margin: 0 auto;
-    animation: scrollPulse 2s ease-in-out infinite;
-  }
-
-  /* ─── LETTER ─────────────────────────────────────── */
-  .note-section {
-    background: var(--cream);
-    display: flex;
-    justify-content: center;
-    padding: 6rem 2rem;
-    position: relative;
-  }
-
-  .note-section::before {
+  /* Gentle vignette */
+  #stage::after {
     content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 4px;
-    background: linear-gradient(to right, transparent, var(--green-mid), transparent);
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 80% at 50% 50%, transparent 40%, rgba(0,0,0,0.35) 100%);
+    pointer-events: none;
+    z-index: 2;
   }
 
-  .letter-wrap { max-width: 600px; width: 100%; }
-
-  .letter-label {
-    font-family: 'EB Garamond', serif;
-    font-style: italic;
-    color: var(--church-grey);
-    font-size: 0.9rem;
-    letter-spacing: 0.1em;
-    text-align: center;
-    margin-bottom: 2rem;
-    text-transform: uppercase;
+  /* ── CUSTOM CURSOR ── */
+  #cursor {
+    position: fixed; pointer-events: none; z-index: 100;
+    width: 28px; height: 28px;
+    transform: translate(-50%, -50%);
+    transition: transform 0.08s ease;
   }
+  #cursor svg { width: 100%; height: 100%; }
+  #cursor.watering { width: 38px; height: 38px; }
 
-  .letter {
-    background: #faf7ef;
-    border: 1px solid rgba(139,98,68,0.2);
+  /* ── HOTSPOTS ── */
+  .hotspot {
+    position: absolute; border-radius: 50%;
+    cursor: none; z-index: 10;
+    transition: all 0.3s ease;
+  }
+  .hotspot::before {
+    content: '';
+    position: absolute; inset: -8px;
+    border-radius: 50%;
+    border: 1px solid rgba(245,240,232,0);
+    transition: border-color 0.4s ease, inset 0.3s ease;
+  }
+  .hotspot:hover::before {
+    border-color: rgba(245,240,232,0.5);
+    inset: -12px;
+  }
+  .hotspot-dot {
+    width: 10px; height: 10px;
+    background: rgba(245,240,232,0.6);
+    border-radius: 50%;
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    animation: breathe 3s ease-in-out infinite;
+  }
+  @keyframes breathe {
+    0%,100% { transform: translate(-50%,-50%) scale(1); opacity:0.5; }
+    50% { transform: translate(-50%,-50%) scale(1.6); opacity:0.9; }
+  }
+  .hs-azalea  { width:130px; height:110px; left:28%;  top:42%; }
+  .hs-statue  { width:70px;  height:120px; right:12%; bottom:18%; }
+  .hs-bench   { width:100px; height:80px;  left:4%;   bottom:22%; }
+  .hs-fern    { width:100px; height:80px;  left:2%;   top:45%; }
+  .hs-conserv { width:110px; height:90px;  left:32%;  top:18%; }
+  .hs-bluebell{ width:80px;  height:60px;  right:18%; bottom:12%; }
+
+  /* ── TOOLTIP ── */
+  #tooltip {
+    position: fixed; z-index: 60;
+    background: var(--stone);
+    color: var(--ink);
+    padding: 10px 16px;
     border-radius: 2px;
-    padding: 3rem 3.5rem;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 8px 40px rgba(0,0,0,0.08);
-    position: relative;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 15px; font-style: italic; font-weight: 300;
+    line-height: 1.4;
+    max-width: 220px;
+    pointer-events: none;
     opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
+    transition: opacity 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    border-left: 2px solid var(--sage);
+  }
+  #tooltip.visible { opacity: 1; }
+
+  /* ── PEARL CHAT PANEL ── */
+  #pearl-panel {
+    position: fixed; right: 0; bottom: 0;
+    width: min(380px, 100%);
+    z-index: 40;
+    transform: translateY(100%);
+    transition: transform 0.5s cubic-bezier(0.22,1,0.36,1);
+    pointer-events: none;
+  }
+  #pearl-panel.open {
+    transform: translateY(0);
+    pointer-events: all;
+  }
+  .pearl-inner {
+    background: rgba(245,240,232,0.97);
+    border-radius: 12px 12px 0 0;
+    border-top: 1px solid rgba(90,62,43,0.2);
+    overflow: hidden;
+    color: var(--ink);
+  }
+  .pearl-header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 18px 10px;
+    border-bottom: 1px solid rgba(90,62,43,0.1);
+  }
+  .pearl-avatar {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: var(--sage);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cormorant Garamond', serif; font-size: 16px; font-style: italic;
+    color: #fff; flex-shrink: 0;
+  }
+  .pearl-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px; font-weight: 400; color: var(--ink);
+  }
+  .pearl-status { font-size: 11px; color: var(--sage); letter-spacing: 0.5px; }
+  .close-btn {
+    margin-left: auto; background: none; border: none; cursor: pointer;
+    color: rgba(42,31,21,0.4); font-size: 20px; line-height: 1;
+    padding: 4px;
+  }
+  .pearl-messages {
+    padding: 14px 18px; min-height: 120px; max-height: 200px;
+    overflow-y: auto;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .msg {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 15px; line-height: 1.65;
+    color: var(--ink);
+    background: rgba(122,148,120,0.1);
+    padding: 10px 14px;
+    border-radius: 0 10px 10px 10px;
+    border-left: 2px solid var(--sage);
+    max-width: 90%;
+    animation: msgIn 0.4s ease;
+  }
+  @keyframes msgIn {
+    from { opacity:0; transform: translateY(8px); }
+    to   { opacity:1; transform: translateY(0); }
+  }
+  .pearl-input-row {
+    display: flex; gap: 8px;
+    padding: 10px 14px 14px;
+    border-top: 1px solid rgba(90,62,43,0.1);
+  }
+  .pearl-input {
+    flex: 1; border: 1px solid rgba(90,62,43,0.2);
+    border-radius: 4px; padding: 8px 12px;
+    font-family: 'EB Garamond', Georgia, serif; font-size: 15px;
+    background: rgba(255,255,255,0.7); color: var(--ink);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .pearl-input:focus { border-color: var(--sage); }
+  .pearl-input::placeholder { color: rgba(42,31,21,0.35); font-style: italic; }
+  .send-btn {
+    background: var(--sage); color: #fff; border: none;
+    border-radius: 4px; padding: 8px 16px; cursor: pointer;
+    font-family: 'Cormorant Garamond', serif; font-size: 14px;
+    letter-spacing: 0.5px;
+    transition: background 0.2s;
+  }
+  .send-btn:hover { background: #5a7858; }
+
+  /* ── BOTTOM TRAY ── */
+  #tray {
+    position: fixed; bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    z-index: 30;
+    display: flex; gap: 0;
+    background: rgba(245,240,232,0.93);
+    border-radius: 12px 12px 0 0;
+    border: 1px solid rgba(90,62,43,0.15);
+    border-bottom: none;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+  }
+  #tray.hidden { transform: translateX(-50%) translateY(100%); }
+  .tray-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    padding: 12px 22px;
+    background: none; border: none; border-right: 1px solid rgba(90,62,43,0.1);
+    cursor: pointer; color: var(--ink);
+    font-family: 'Cormorant Garamond', serif; font-size: 11px;
+    letter-spacing: 1px; text-transform: uppercase;
+    transition: background 0.2s;
+  }
+  .tray-btn:last-child { border-right: none; }
+  .tray-btn:hover { background: rgba(122,148,120,0.1); }
+  .tray-btn.active { background: rgba(122,148,120,0.18); color: #3d5e3b; }
+  .tray-icon {
+    width: 22px; height: 22px; opacity: 0.75;
   }
 
-  .letter.visible { opacity: 1; transform: translateY(0); }
+  /* ── VIEW SWITCHER ── */
+  #views {
+    position: fixed; top: 50%; left: 14px;
+    transform: translateY(-50%);
+    z-index: 30;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .view-dot {
+    width: 28px; height: 28px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    opacity: 0.45;
+    filter: drop-shadow(0 0 3px rgba(245,240,232,0.3));
+  }
+  .view-dot:hover {
+    opacity: 0.85;
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 6px rgba(245,240,232,0.7));
+  }
+  .view-dot.active {
+    opacity: 1;
+    transform: scale(1.2);
+    filter: drop-shadow(0 0 8px rgba(255,240,200,0.9));
+    animation: fairy-glow 2s ease-in-out infinite;
+  }
+  @keyframes fairy-glow {
+    0%, 100% { filter: drop-shadow(0 0 6px rgba(255,240,200,0.8)); }
+    50%       { filter: drop-shadow(0 0 12px rgba(255,220,120,1)); }
+  }
 
-  .letter::before {
+  /* ── WATER DROPS ── */
+  .drop {
+    position: fixed; pointer-events: none; z-index: 20;
+    width: 6px; height: 8px; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    background: rgba(140,190,220,0.7);
+    animation: drip 0.8s ease-in forwards;
+  }
+  @keyframes drip {
+    0%   { transform: translateY(0) scale(1); opacity: 0.8; }
+    70%  { transform: translateY(40px) scale(0.8); opacity: 0.5; }
+    100% { transform: translateY(55px) scale(0.3); opacity: 0; }
+  }
+
+  /* ── PEARL AMBIENT BUBBLE ── */
+  #ambient {
+    position: fixed; left: 50%; bottom: 80px;
+    transform: translateX(-50%);
+    z-index: 25; pointer-events: none;
+    text-align: center;
+    opacity: 0; transition: opacity 1s ease;
+  }
+  #ambient.show { opacity: 1; }
+  .ambient-text {
+    display: inline-block;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-style: italic; font-size: 17px; font-weight: 300;
+    color: rgba(245,240,232,0.9);
+    text-shadow: 0 1px 12px rgba(0,0,0,0.7);
+    letter-spacing: 0.3px;
+  }
+
+  /* ── LOADING ── */
+  #loader {
+    position: fixed; inset: 0; z-index: 200;
+    background: #1a1a15;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 20px;
+    transition: opacity 1.5s ease;
+  }
+  #loader.fade { opacity: 0; pointer-events: none; }
+  .loader-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px; font-weight: 300; letter-spacing: 4px;
+    color: rgba(245,240,232,0.8);
+  }
+  .loader-sub {
+    font-family: 'EB Garamond', serif; font-size: 14px;
+    color: rgba(245,240,232,0.4); letter-spacing: 2px;
+    font-style: italic;
+  }
+  .loader-bar {
+    width: 120px; height: 1px;
+    background: rgba(245,240,232,0.1);
+    position: relative; overflow: hidden;
+  }
+  .loader-bar::after {
     content: '';
-    position: absolute;
-    top: 0; right: 0;
-    width: 0; height: 0;
-    border-style: solid;
-    border-width: 0 40px 40px 0;
-    border-color: transparent var(--parchment) transparent transparent;
+    position: absolute; inset: 0;
+    background: var(--sage);
+    animation: load 1.5s ease forwards;
+    transform: translateX(-100%);
   }
+  @keyframes load { to { transform: translateX(0); } }
 
-  .letter-header {
+  /* ── Compose panel ── */
+  .compose-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 200;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .compose-overlay.visible { display: flex; }
+  .compose-panel {
+    background: #f5f0e8;
+    width: 100%;
+    max-width: 520px;
+    border-radius: 16px 16px 0 0;
+    padding: 28px 28px 36px;
+    font-family: 'EB Garamond', serif;
+    color: #2c2c2c;
+    box-shadow: 0 -8px 40px rgba(0,0,0,0.3);
+  }
+  .compose-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid rgba(139,98,68,0.12);
-  }
-
-  .letter-from { font-family: 'Playfair Display', serif; font-size: 0.95rem; color: var(--faded-ink); }
-  .letter-from small { display: block; font-family: 'EB Garamond', serif; font-style: italic; font-size: 0.82rem; color: var(--church-grey); margin-top: 0.2rem; }
-  .letter-date { font-family: 'EB Garamond', serif; font-style: italic; font-size: 0.85rem; color: var(--church-grey); text-align: right; }
-  .letter-body { font-size: 1rem; line-height: 1.8; color: var(--faded-ink); }
-  .letter-body p + p { margin-top: 1em; }
-  .letter-sig { margin-top: 2rem; font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.1rem; color: var(--ink); }
-  .letter-sig small { display: block; font-family: 'EB Garamond', serif; font-style: normal; font-size: 0.85rem; color: var(--church-grey); margin-top: 0.2rem; }
-
-  /* ─── ENTER CTA ──────────────────────────────────── */
-  .enter-section {
-    background: var(--green-dark);
-    padding: 5rem 2rem;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .enter-section::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse at center, rgba(74,102,71,0.4) 0%, transparent 70%);
-  }
-
-  .enter-section h2 { font-family: 'Playfair Display', serif; font-weight: 400; font-size: clamp(1.5rem, 4vw, 2.5rem); color: var(--cream); margin-bottom: 1rem; position: relative; }
-  .enter-section p { color: rgba(244,240,230,0.65); font-style: italic; max-width: 480px; margin: 0 auto 2.5rem; font-size: 1.05rem; position: relative; }
-
-  .btn-enter {
-    display: inline-block;
-    background: transparent;
-    color: var(--cream);
-    border: 1px solid rgba(244,240,230,0.5);
-    padding: 0.9rem 3rem;
-    font-family: 'EB Garamond', serif;
-    font-size: 1.05rem;
-    letter-spacing: 0.12em;
-    text-decoration: none;
-    text-transform: uppercase;
-    cursor: pointer;
-    position: relative;
-    transition: all 0.3s ease;
-    overflow: hidden;
-  }
-
-  .btn-enter::before { content: ''; position: absolute; inset: 0; background: rgba(244,240,230,0.08); transform: scaleX(0); transform-origin: left; transition: transform 0.3s ease; }
-  .btn-enter:hover::before { transform: scaleX(1); }
-  .btn-enter:hover { border-color: rgba(244,240,230,0.8); }
-
-  /* ─── CAST GRID ──────────────────────────────────── */
-  .cast-section { background: var(--parchment); padding: 6rem 2rem; }
-  .cast-section h2 { font-family: 'Playfair Display', serif; font-weight: 400; text-align: center; font-size: clamp(1.6rem, 4vw, 2.4rem); color: var(--ink); margin-bottom: 0.5rem; }
-  .section-sub { text-align: center; font-style: italic; color: var(--church-grey); margin-bottom: 3.5rem; font-size: 1rem; }
-
-  .cast-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1.5rem;
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-
-  .cast-card {
-    background: var(--cream);
-    border: 1px solid rgba(139,98,68,0.15);
-    overflow: hidden;
-    cursor: pointer;
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
-  }
-
-  .cast-card:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
-
-  .cast-portrait {
-    height: 160px;
-    position: relative;
-    overflow: hidden;
-    display: flex;
     align-items: center;
-    justify-content: center;
+    margin-bottom: 20px;
   }
-
-  /* Swap .portrait-initial for <img src="images/[name].jpg"> when Grok portraits are ready */
-  .cast-card:nth-child(1) .cast-portrait { background: linear-gradient(135deg, #2c3d5a 0%, #5a6e8a 100%); }
-  .cast-card:nth-child(2) .cast-portrait { background: linear-gradient(135deg, #3a2a1a 0%, #7a5a30 100%); }
-  .cast-card:nth-child(3) .cast-portrait { background: linear-gradient(135deg, #3d1a3a 0%, #8a4a78 100%); }
-  .cast-card:nth-child(4) .cast-portrait { background: linear-gradient(135deg, #1a2c3a 0%, #4a7a9a 100%); }
-  .cast-card:nth-child(5) .cast-portrait { background: linear-gradient(135deg, #1a3a2a 0%, #3a7a58 100%); }
-  .cast-card:nth-child(6) .cast-portrait { background: linear-gradient(135deg, #3a3a1a 0%, #6a6a2a 100%); }
-  .cast-card:nth-child(7) .cast-portrait { background: linear-gradient(135deg, #1a2a3a 0%, #2a4a6a 100%); }
-
-  .portrait-initial { font-family: 'Playfair Display', serif; font-size: 4rem; color: rgba(244,240,230,0.2); font-style: italic; user-select: none; }
-  .cast-portrait img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
-  .cast-info { padding: 1.2rem 1.4rem; }
-  .cast-name { font-family: 'Playfair Display', serif; font-size: 1.05rem; color: var(--ink); margin-bottom: 0.15rem; }
-  .cast-role { font-style: italic; font-size: 0.88rem; color: var(--church-grey); line-height: 1.4; }
-
-  /* ─── FOUND FRAGMENTS ────────────────────────────── */
-  .fragment-section { background: var(--cream); padding: 6rem 2rem; display: flex; justify-content: center; }
-  .fragment-inner { max-width: 620px; width: 100%; }
-  .fragment-inner h2 { font-family: 'Playfair Display', serif; font-weight: 400; font-size: clamp(1.4rem, 3vw, 2rem); color: var(--ink); margin-bottom: 0.5rem; font-style: italic; }
-  .fragment-inner .section-sub { text-align: left; margin-bottom: 2.5rem; }
-
-  .fragment-note {
-    border-left: 2px solid rgba(139,98,68,0.25);
-    padding: 1.2rem 1.6rem;
-    margin-bottom: 1.5rem;
-    opacity: 0;
-    transform: translateX(-12px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
+  .compose-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: #3d5e3b;
+    letter-spacing: 0.04em;
   }
-
-  .fragment-note.visible { opacity: 1; transform: translateX(0); }
-  .fragment-note:nth-child(2) { transition-delay: 0.1s; }
-  .fragment-note:nth-child(3) { transition-delay: 0.2s; }
-  .fragment-note:nth-child(4) { transition-delay: 0.3s; }
-
-  .fragment-meta { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--church-grey); margin-bottom: 0.6rem; }
-  .fragment-text { font-style: italic; color: var(--faded-ink); font-size: 0.98rem; line-height: 1.7; }
-
-  /* ─── FOOTER ─────────────────────────────────────── */
-  footer { background: var(--ink); color: rgba(244,240,230,0.4); text-align: center; padding: 2rem; font-size: 0.85rem; font-style: italic; }
-  footer strong { color: rgba(244,240,230,0.7); font-weight: 400; font-family: 'Playfair Display', serif; }
-
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes scrollPulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; } }
-
-  @media (max-width: 600px) {
-    .letter { padding: 2rem 1.8rem; }
-    .letter-header { flex-direction: column; gap: 0.5rem; }
+  .compose-close {
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    cursor: pointer;
+    color: #888;
+    line-height: 1;
+    padding: 4px 8px;
   }
+  .compose-field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 12px;
+  }
+  .compose-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a9478;
+    margin-bottom: 4px;
+  }
+  .compose-input, .compose-textarea {
+    background: #fff;
+    border: 1px solid #c8d8c6;
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-family: 'EB Garamond', serif;
+    font-size: 1rem;
+    color: #2c2c2c;
+    outline: none;
+  }
+  .compose-input:focus, .compose-textarea:focus {
+    border-color: #7a9478;
+  }
+  .compose-textarea { height: 100px; resize: vertical; }
+  .compose-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .compose-btn {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.95rem;
+    letter-spacing: 0.08em;
+    padding: 8px 20px;
+    border-radius: 6px;
+    border: 1px solid #c8d8c6;
+    cursor: pointer;
+    background: none;
+    color: #3d5e3b;
+  }
+  .compose-btn.primary {
+    background: #3d5e3b;
+    color: #f5f0e8;
+    border-color: #3d5e3b;
+  }
+  .compose-btn:disabled { opacity: 0.45; cursor: default; }
+  .compose-status {
+    font-size: 0.9rem;
+    margin-top: 10px;
+    min-height: 1.2em;
+    color: #666;
+  }
+  .compose-status.success { color: #3d5e3b; }
+  .compose-status.error   { color: #c0392b; }
+
+
+/* EMAIL PANEL */
+#email-panel {
+  position: fixed;
+  bottom: -100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(480px, 96vw);
+  background: rgba(245,240,230,0.97);
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 -4px 32px rgba(0,0,0,0.18);
+  transition: bottom 0.4s cubic-bezier(.4,0,.2,1);
+  z-index: 120;
+  font-family: 'EB Garamond', serif;
+}
+#email-panel.open { bottom: 0; }
+.email-inner { padding: 20px 24px 28px; }
+.email-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.email-title {
+  flex: 1;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem;
+  color: #3d5e3b;
+  letter-spacing: 0.04em;
+}
+.email-subtitle {
+  font-size: 0.82rem;
+  color: #8a7a60;
+  margin-top: 2px;
+}
+.email-field {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+  padding: 10px 14px;
+  border: 1px solid rgba(122,148,120,0.35);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.7);
+  font-family: 'EB Garamond', serif;
+  font-size: 1rem;
+  color: #3a3228;
+  outline: none;
+  resize: none;
+}
+.email-field:focus { border-color: rgba(122,148,120,0.7); }
+.email-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+.email-send-btn {
+  padding: 9px 22px;
+  background: #4a7a48;
+  color: #f5f0e6;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.email-send-btn:hover { background: #3d5e3b; }
+.email-cancel-btn {
+  padding: 9px 16px;
+  background: transparent;
+  color: #8a7a60;
+  border: 1px solid rgba(122,148,120,0.35);
+  border-radius: 8px;
+  font-family: 'EB Garamond', serif;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.email-sent-msg {
+  text-align: center;
+  color: #4a7a48;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  padding: 20px 0 8px;
+  display: none;
+}
+
+/* LISTEN PANEL */
+#listen-panel {
+  position: fixed;
+  bottom: -100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(480px, 96vw);
+  background: rgba(245,240,230,0.97);
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 -4px 32px rgba(0,0,0,0.18);
+  transition: bottom 0.4s cubic-bezier(.4,0,.2,1);
+  z-index: 120;
+  font-family: 'EB Garamond', serif;
+}
+#listen-panel.open { bottom: 0; }
+.listen-inner { padding: 20px 24px 28px; }
+.listen-header {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+}
+.listen-title {
+  flex: 1;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem; color: #3d5e3b; letter-spacing: 0.04em;
+}
+.listen-subtitle { font-size: 0.82rem; color: #8a7a60; margin-top: 2px; }
+.poem-card {
+  background: rgba(255,255,255,0.6);
+  border: 1px solid rgba(122,148,120,0.25);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.poem-card:hover { background: rgba(255,255,255,0.85); }
+.poem-card.playing { border-color: rgba(122,148,120,0.6); background: rgba(255,255,255,0.9); }
+.poem-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem; color: #3d5e3b;
+  margin-bottom: 4px;
+}
+.poem-duration { font-size: 0.8rem; color: #8a7a60; }
+.poem-progress {
+  margin-top: 10px;
+  height: 2px;
+  background: rgba(122,148,120,0.2);
+  border-radius: 2px;
+  display: none;
+}
+.poem-progress-bar {
+  height: 100%;
+  background: #4a7a48;
+  border-radius: 2px;
+  width: 0%;
+  transition: width 0.5s linear;
+}
+.poem-controls {
+  display: flex; align-items: center; gap: 10px; margin-top: 8px; display: none;
+}
+.poem-play-btn {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: #4a7a48; border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 10px;
+}
+.poem-time { font-size: 0.78rem; color: #8a7a60; }
+
+  /* ── ABOUT LINK ── */
+  .about-link {
+    position: fixed;
+    top: 16px;
+    right: 24px;
+    font-family: 'EB Garamond', serif;
+    font-size: 0.82rem;
+    letter-spacing: 0.12em;
+    color: rgba(245,240,232,0.5);
+    text-decoration: none;
+    z-index: 55;
+    pointer-events: auto;
+    transition: color 0.2s;
+    text-shadow: 0 1px 6px rgba(0,0,0,0.5);
+  }
+  .about-link:hover { color: rgba(245,240,232,0.9); }
 </style>
 </head>
 <body>
 
-<!-- ═══ HERO ══════════════════════════════════════════════ -->
-<!-- Image note: set url('images/millham-green-village.jpg') in .hero-image CSS above -->
-<section class="hero">
-  <div class="hero-image"></div>
-  <div class="hero-content">
-    <h1 class="village-name">Millham Green</h1>
-    <div class="village-rule">
-      <span></span>
-      <em>Est. long before you arrived</em>
-      <span></span>
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-name">anewflowering.love</div>
+  <div class="loader-sub">stepping into the garden</div>
+  <div class="loader-bar"></div>
+</div>
+
+<!-- CUSTOM CURSOR -->
+<div id="cursor">
+  <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="14" cy="14" r="5" fill="rgba(245,240,232,0.85)" id="cursor-dot"/>
+    <circle cx="14" cy="14" r="11" stroke="rgba(245,240,232,0.45)" stroke-width="1"/>
+  </svg>
+</div>
+
+<!-- HEADER -->
+<header>
+  <span class="site-name">anewflowering.love</span>
+</header>
+<a class="about-link" href="about.html">About Pearl</a>
+
+<!-- GARDEN STAGE -->
+<div id="stage">
+  <!-- Primary view: rear garden with statue, bench, azaleas -->
+  <img class="garden-img" id="view0"
+       src="pearl-rear-garden.jpg"
+       alt="Pearl's rear garden — azaleas, ferns, Saint Francis, bench">
+  <!-- Secondary view: garden establishing shot -->
+  <img class="garden-img hidden" id="view1"
+       src="pearl-garden-overview.jpg"
+       alt="Pearl's garden — path to statue and conservatory">
+  <!-- Path view -->
+  <img class="garden-img hidden" id="view2"
+       src="pearl-path.jpg"
+       alt="Path through Pearl's garden">
+  <!-- Real photograph: Saint Francis -->
+  <img class="garden-img hidden" id="view3"
+       src="pearl-st-francis.jpg"
+       alt="Saint Francis among the bluebells — Pearl's own photograph">
+
+  <!-- HOTSPOTS -->
+  <div class="hotspot hs-azalea" data-views="0,1" data-tip="Azaleas in full flower — deep cerise, magenta, white. Pearl planted these herself, one by one over thirty years." onmouseenter="showTip(event,this)" onmouseleave="hideTip()"></div>
+  <div class="hotspot hs-statue" data-views="0,3" data-tip="Saint Francis, among the bluebells. He has stood at the bottom of the garden for as long as anyone can remember — patient, weathered, watching over everything that grows." onmouseenter="showTip(event,this)" onmouseleave="hideTip()"></div>
+  <div class="hotspot hs-bench" data-views="0" data-tip="The bench was a gift to Pearl from the White Lodge community. She kept it at the bottom of the garden beside Saint Francis. It now sits in Jon's garden." onmouseenter="showTip(event,this)" onmouseleave="hideTip()" onclick="openChat('I am sitting on your bench, Pearl.')"></div>
+  <div class="hotspot hs-fern" data-views="0,1,2" data-tip="Ferns from the shaded bank — they seed themselves wherever they choose, and Pearl always let them." onmouseenter="showTip(event,this)" onmouseleave="hideTip()"></div>
+  <div class="hotspot hs-conserv" data-views="0,1" data-tip="The conservatory — flat-roofed, wooden-framed, plants grown so thickly up the outside that you could barely see through the glass." onmouseenter="showTip(event,this)" onmouseleave="hideTip()"></div>
+  <div class="hotspot hs-bluebell" data-views="0,3" data-tip="Bluebells around Saint Francis's feet — they come back every spring without any help, which Pearl thought was exactly right." onmouseenter="showTip(event,this)" onmouseleave="hideTip()"></div>
+
+  <!-- Hotspot dots -->
+  <div class="hotspot hs-azalea" data-views="0,1" style="pointer-events:none"><div class="hotspot-dot"></div></div>
+  <div class="hotspot hs-statue" data-views="0,3" style="pointer-events:none"><div class="hotspot-dot"></div></div>
+  <div class="hotspot hs-bench" data-views="0" style="pointer-events:none"><div class="hotspot-dot"></div></div>
+  <div class="hotspot hs-fern" data-views="0,1,2" style="pointer-events:none"><div class="hotspot-dot"></div></div>
+  <div class="hotspot hs-conserv" data-views="0,1" style="pointer-events:none"><div class="hotspot-dot"></div></div>
+  <div class="hotspot hs-bluebell" data-views="0,3" style="pointer-events:none"><div class="hotspot-dot"></div></div>
+</div>
+
+<!-- TOOLTIP -->
+<div id="tooltip"></div>
+
+<!-- AMBIENT PEARL QUOTE -->
+<div id="ambient">
+  <div class="ambient-text" id="ambient-text"></div>
+</div>
+
+<!-- VIEW DOTS -->
+<div id="views">
+  <div class="view-dot active" onclick="switchView(0)" title="Rear garden"><svg class="fairy-svg" viewBox="0 0 28 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Wings -->
+    <ellipse cx="8" cy="16" rx="7" ry="4" fill="rgba(200,230,255,0.55)" transform="rotate(-30 8 16)"/>
+    <ellipse cx="20" cy="16" rx="7" ry="4" fill="rgba(200,230,255,0.55)" transform="rotate(30 20 16)"/>
+    <ellipse cx="7" cy="19" rx="4.5" ry="2.5" fill="rgba(220,240,255,0.4)" transform="rotate(-20 7 19)"/>
+    <ellipse cx="21" cy="19" rx="4.5" ry="2.5" fill="rgba(220,240,255,0.4)" transform="rotate(20 21 19)"/>
+    <!-- Body/dress -->
+    <ellipse cx="14" cy="23" rx="4" ry="6" fill="rgba(245,235,210,0.85)"/>
+    <!-- Head -->
+    <circle cx="14" cy="12" r="4" fill="rgba(245,235,210,0.9)"/>
+    <!-- Hair -->
+    <ellipse cx="14" cy="9.5" rx="4" ry="2.5" fill="rgba(200,170,110,0.75)"/>
+    <!-- Arms leaning forward -->
+    <path d="M10 20 Q7 22 8 25" stroke="rgba(245,235,210,0.8)" stroke-width="1.2" stroke-linecap="round"/>
+    <path d="M18 20 Q21 22 20 25" stroke="rgba(245,235,210,0.8)" stroke-width="1.2" stroke-linecap="round"/>
+    <!-- Sparkle -->
+    <circle cx="22" cy="9" r="1" fill="rgba(255,240,150,0.9)"/>
+    <line x1="22" y1="6" x2="22" y2="8" stroke="rgba(255,240,150,0.8)" stroke-width="0.7"/>
+    <line x1="22" y1="10" x2="22" y2="12" stroke="rgba(255,240,150,0.8)" stroke-width="0.7"/>
+    <line x1="19" y1="9" x2="21" y2="9" stroke="rgba(255,240,150,0.8)" stroke-width="0.7"/>
+    <line x1="23" y1="9" x2="25" y2="9" stroke="rgba(255,240,150,0.8)" stroke-width="0.7"/>
+  </svg></div>
+  <div class="view-dot" onclick="switchView(1)" title="Garden overview"><svg class="fairy-svg" viewBox="0 0 28 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Wings -->
+    <ellipse cx="8" cy="16" rx="7" ry="4" fill="rgba(200,230,255,0.55)" transform="rotate(-30 8 16)"/>
+    <ellipse cx="20" cy="16" rx="7" ry="4" fill="rgba(200,230,255,0.55)" transform="rotate(30 20 16)"/>
+    <ellipse cx="7" cy="19" rx="4.5" ry="2.5" fill="rgba(220,240,255,0.4)" transform="rotate(-20 7 19)"/>
+    <ellipse cx="21" cy="19" rx="4.5" ry="2.5" fill="rgba(220,240,255,0.4)" transform="rotate(20 21 19)"/>
+    <!-- Body/dress -->
+    <ellipse cx="14" cy="23" rx="4" ry="6" fill="rgba(245,235,210,0.85)"/>
+    <!-- Head -->
+    <circle cx="14" cy="12" r="4" fill="rgba(245,235,210,0.9)"/>
+    <!-- Hair -->
+    <ellipse cx="14" cy="9.5" rx="4" ry="2.5" fill="rgba(200,170,110,0.75)"/>
+    <!-- Arms leaning forward -->
+    <path d="M10 20 Q7 22 8 25" stroke="rgba(245,235,210,0.8)" stroke-width="1.2" stroke-linecap="round"/>
+    <path d="M18 20 Q21 22 20 25" stroke="rgba(245,235,210,0.8)" stroke-width="1.2" stroke-linecap="round"/>
+    <!-- Sparkle -->
+    <circle cx="22" cy="9" r="1" fill="rgba(255,240,150,0.9)"/>
+    <line x1="22" y1="6" x2="22" y2="8" stroke="rgba(255,240,150,0.8)" stroke-width="0.7"/>
+    <line x1="22" y1="10" x2="22" y2="12" stroke="rgba(255,240,150,0.8)" stroke-width="0.7"/>
+    <line x1="19" y1="9" x2="21" y2="9" stroke="rgba(255,240,150,0.8)" stroke-width="0.7"/>
+    <line x1="23" y1="9" x2="25" y2="9" stroke="rgba(255,240,150,0.8)" stroke-width="0.7"/>
+  </svg></div>
+  <div class="view-dot" onclick="switchView(2)" title="The path"><svg class="fairy-svg" viewBox="0 0 28 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Wings -->
+    <ellipse cx="8" cy="16" rx="7" ry="4" fill="rgba(200,230,255,0.55)" transform="rotate(-30 8 16)"/>
+    <ellipse cx="20" cy="16" rx="7" ry="4" fill="rgba(200,230,255,0.55)" transform="rotate(30 20 16)"/>
+    <ellipse cx="7" cy="19" rx="4.5" ry="2.5" fill="rgba(220,240,255,0.4)" transform="rotate(-20 7 19)"/>
+    <ellipse cx="21" cy="19" rx="4.5" ry="2.5" fill="rgba(220,240,255,0.4)" transform="rotate(20 21 19)"/>
+    <!-- Body/dress -->
+    <ellipse cx="14" cy="23" rx="4" ry="6" fill="rgba(245,235,210,0.85)"/>
+    <!-- Head -->
+    <circle cx="14" cy="12" r="4" fill="rgba(245,235,210,0.9)"/>
+    <!-- Hair -->
+    <ellipse cx="14" cy="9.5" rx="4" ry="2.5" fill="rgba(200,170,110,0.75)"/>
+    <!-- Arms leaning forward -->
+    <path d="M10 20 Q7 22 8 25" stroke="rgba(245,235,210,0.8)" stroke-width="1.2" stroke-linecap="round"/>
+    <path d="M18 20 Q21 22 20 25" stroke="rgba(245,235,210,0.8)" stroke-width="1.2" stroke-linecap="round"/>
+    <!-- Sparkle -->
+    <circle cx="22" cy="9" r="1" fill="rgba(255,240,150,0.9)"/>
+    <line x1="22" y1="6" x2="22" y2="8" stroke="rgba(255,240,150,0.8)" stroke-width="0.7"/>
+    <line x1="22" y1="10" x2="22" y2="12" stroke="rgba(255,240,150,0.8)" stroke-width="0.7"/>
+    <line x1="19" y1="9" x2="21" y2="9" stroke="rgba(255,240,150,0.8)" stroke-width="0.7"/>
+    <line x1="23" y1="9" x2="25" y2="9" stroke="rgba(255,240,150,0.8)" stroke-width="0.7"/>
+  </svg></div>
+  <div class="view-dot" onclick="switchView(3)" title="Saint Francis"><svg class="fairy-svg" viewBox="0 0 28 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Wings -->
+    <ellipse cx="8" cy="16" rx="7" ry="4" fill="rgba(200,230,255,0.55)" transform="rotate(-30 8 16)"/>
+    <ellipse cx="20" cy="16" rx="7" ry="4" fill="rgba(200,230,255,0.55)" transform="rotate(30 20 16)"/>
+    <ellipse cx="7" cy="19" rx="4.5" ry="2.5" fill="rgba(220,240,255,0.4)" transform="rotate(-20 7 19)"/>
+    <ellipse cx="21" cy="19" rx="4.5" ry="2.5" fill="rgba(220,240,255,0.4)" transform="rotate(20 21 19)"/>
+    <!-- Body/dress -->
+    <ellipse cx="14" cy="23" rx="4" ry="6" fill="rgba(245,235,210,0.85)"/>
+    <!-- Head -->
+    <circle cx="14" cy="12" r="4" fill="rgba(245,235,210,0.9)"/>
+    <!-- Hair -->
+    <ellipse cx="14" cy="9.5" rx="4" ry="2.5" fill="rgba(200,170,110,0.75)"/>
+    <!-- Arms leaning forward -->
+    <path d="M10 20 Q7 22 8 25" stroke="rgba(245,235,210,0.8)" stroke-width="1.2" stroke-linecap="round"/>
+    <path d="M18 20 Q21 22 20 25" stroke="rgba(245,235,210,0.8)" stroke-width="1.2" stroke-linecap="round"/>
+    <!-- Sparkle -->
+    <circle cx="22" cy="9" r="1" fill="rgba(255,240,150,0.9)"/>
+    <line x1="22" y1="6" x2="22" y2="8" stroke="rgba(255,240,150,0.8)" stroke-width="0.7"/>
+    <line x1="22" y1="10" x2="22" y2="12" stroke="rgba(255,240,150,0.8)" stroke-width="0.7"/>
+    <line x1="19" y1="9" x2="21" y2="9" stroke="rgba(255,240,150,0.8)" stroke-width="0.7"/>
+    <line x1="23" y1="9" x2="25" y2="9" stroke="rgba(255,240,150,0.8)" stroke-width="0.7"/>
+  </svg></div>
+</div>
+
+<!-- BOTTOM TRAY -->
+<div id="tray">
+  <button class="tray-btn" id="btn-water" onclick="setTool('water',this)">
+    <svg class="tray-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="16" cy="18" rx="7" ry="5.5" fill="#7aaa6e"/>
+      <circle cx="23" cy="13" r="5" fill="#4a7ab5"/>
+      <ellipse cx="24.5" cy="14" rx="2.5" ry="2" fill="#f0ede4"/>
+      <rect x="22" y="12" width="5" height="1.2" rx="0.6" fill="#1a1a1a"/>
+      <circle cx="25" cy="12.5" r="0.8" fill="#1a1a1a"/>
+      <ellipse cx="14" cy="20" rx="4" ry="3.5" fill="#e8c84a"/>
+      <ellipse cx="15" cy="17" rx="5" ry="3" fill="#5a8a58" transform="rotate(-10 15 17)"/>
+      <polygon points="28,13 31,14 28,15" fill="#2a2a2a"/>
+      <polygon points="9,18 6,22 9,21 7,24 11,20" fill="#4a6e48"/>
+      <line x1="15" y1="23" x2="13" y2="27" stroke="#8a7a50" stroke-width="1"/>
+      <line x1="17" y1="23" x2="16" y2="27" stroke="#8a7a50" stroke-width="1"/>
+    </svg>
+    Water
+  </button>
+  <button class="tray-btn" onclick="openChat('')">
+    <svg class="tray-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="16" cy="18" rx="7" ry="5.5" fill="#7aaa6e"/>
+      <circle cx="23" cy="13" r="5" fill="#4a7ab5"/>
+      <ellipse cx="24.5" cy="14" rx="2.5" ry="2" fill="#f0ede4"/>
+      <rect x="22" y="12" width="5" height="1.2" rx="0.6" fill="#1a1a1a"/>
+      <circle cx="25" cy="12.5" r="0.8" fill="#1a1a1a"/>
+      <ellipse cx="14" cy="20" rx="4" ry="3.5" fill="#e8c84a"/>
+      <ellipse cx="15" cy="17" rx="5" ry="3" fill="#5a8a58" transform="rotate(-10 15 17)"/>
+      <polygon points="28,13 31,14 28,15" fill="#2a2a2a"/>
+      <polygon points="9,18 6,22 9,21 7,24 11,20" fill="#4a6e48"/>
+      <line x1="15" y1="23" x2="13" y2="27" stroke="#8a7a50" stroke-width="1"/>
+      <line x1="17" y1="23" x2="16" y2="27" stroke="#8a7a50" stroke-width="1"/>
+    </svg>
+    Chat with Pearl
+  </button>
+  <button class="tray-btn" onclick="openEmail()">
+    <svg class="tray-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="16" cy="18" rx="7" ry="5.5" fill="#7aaa6e"/>
+      <circle cx="23" cy="13" r="5" fill="#4a7ab5"/>
+      <ellipse cx="24.5" cy="14" rx="2.5" ry="2" fill="#f0ede4"/>
+      <rect x="22" y="12" width="5" height="1.2" rx="0.6" fill="#1a1a1a"/>
+      <circle cx="25" cy="12.5" r="0.8" fill="#1a1a1a"/>
+      <ellipse cx="14" cy="20" rx="4" ry="3.5" fill="#e8c84a"/>
+      <ellipse cx="15" cy="17" rx="5" ry="3" fill="#5a8a58" transform="rotate(-10 15 17)"/>
+      <polygon points="28,13 31,14 28,15" fill="#2a2a2a"/>
+      <polygon points="9,18 6,22 9,21 7,24 11,20" fill="#4a6e48"/>
+      <line x1="15" y1="23" x2="13" y2="27" stroke="#8a7a50" stroke-width="1"/>
+      <line x1="17" y1="23" x2="16" y2="27" stroke="#8a7a50" stroke-width="1"/>
+    </svg>
+    Write to Pearl
+  </button>
+  <button class="tray-btn" onclick="openListen()">
+    <svg class="tray-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="16" cy="18" rx="7" ry="5.5" fill="#7aaa6e"/>
+      <circle cx="23" cy="13" r="5" fill="#4a7ab5"/>
+      <ellipse cx="24.5" cy="14" rx="2.5" ry="2" fill="#f0ede4"/>
+      <rect x="22" y="12" width="5" height="1.2" rx="0.6" fill="#1a1a1a"/>
+      <circle cx="25" cy="12.5" r="0.8" fill="#1a1a1a"/>
+      <ellipse cx="14" cy="20" rx="4" ry="3.5" fill="#e8c84a"/>
+      <ellipse cx="15" cy="17" rx="5" ry="3" fill="#5a8a58" transform="rotate(-10 15 17)"/>
+      <polygon points="28,13 31,14 28,15" fill="#2a2a2a"/>
+      <polygon points="9,18 6,22 9,21 7,24 11,20" fill="#4a6e48"/>
+      <line x1="15" y1="23" x2="13" y2="27" stroke="#8a7a50" stroke-width="1"/>
+      <line x1="17" y1="23" x2="16" y2="27" stroke="#8a7a50" stroke-width="1"/>
+    </svg>
+    Listen to Pearl
+  </button>
+  <a class="tray-btn" href="about.html" style="text-decoration:none;">
+    <svg class="tray-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="5" y="9" width="10" height="14" rx="1.5" fill="#c8b89a"/>
+      <rect x="17" y="9" width="10" height="14" rx="1.5" fill="#c8b89a"/>
+      <line x1="16" y1="9" x2="16" y2="23" stroke="#8a7a60" stroke-width="1.2"/>
+      <line x1="8" y1="13" x2="13" y2="13" stroke="#8a7a60" stroke-width="0.9"/>
+      <line x1="8" y1="16" x2="13" y2="16" stroke="#8a7a60" stroke-width="0.9"/>
+      <line x1="8" y1="19" x2="13" y2="19" stroke="#8a7a60" stroke-width="0.9"/>
+      <line x1="19" y1="13" x2="24" y2="13" stroke="#8a7a60" stroke-width="0.9"/>
+      <line x1="19" y1="16" x2="24" y2="16" stroke="#8a7a60" stroke-width="0.9"/>
+      <line x1="19" y1="19" x2="24" y2="19" stroke="#8a7a60" stroke-width="0.9"/>
+      <line x1="16" y1="9" x2="16" y2="23" stroke="rgba(90,62,43,0.3)" stroke-width="2"/>
+    </svg>
+    About Pearl
+  </a>
+</div>
+
+
+<!-- LISTEN PANEL -->
+<div id="listen-panel">
+  <div class="listen-inner">
+    <div class="listen-header">
+      <div class="pearl-avatar">P</div>
+      <div>
+        <div class="listen-title">Pearl reads her poems</div>
+        <div class="listen-subtitle">recorded in her piano room</div>
+      </div>
+      <button class="close-btn" onclick="closeListen()">×</button>
     </div>
-    <p class="tagline">Everyone's very friendly.<br><strong>At first.</strong></p>
+
+    <div class="poem-card" id="card-storeroom" onclick="playPoem('storeroom')">
+      <div class="poem-title">The Storeroom of the Soul</div>
+      <div class="poem-duration">56 seconds</div>
+      <div class="poem-progress" id="prog-storeroom"><div class="poem-progress-bar" id="bar-storeroom"></div></div>
+    </div>
+
+    <div class="poem-card" id="card-gifts" onclick="playPoem('gifts')">
+      <div class="poem-title">Gifts of Simplicity</div>
+      <div class="poem-duration">9 minutes</div>
+      <div class="poem-progress" id="prog-gifts"><div class="poem-progress-bar" id="bar-gifts"></div></div>
+    </div>
+
   </div>
-  <div class="hero-scroll"><span></span></div>
-</section>
+</div>
 
-
-<!-- ═══ GERALDINE'S LETTER ════════════════════════════════ -->
-<section class="note-section">
-  <div class="letter-wrap">
-    <p class="letter-label">Found on your doormat at Pondside Cottage</p>
-    <div class="letter" id="letter">
-      <div class="letter-header">
-        <div class="letter-from">
-          The Reverend G. Marsh
-          <small>St Mary's Vicarage, Millham Green</small>
-        </div>
-        <div class="letter-date">This morning<br><small style="color:var(--pond-blue)">handwritten</small></div>
+<!-- EMAIL PANEL -->
+<div id="email-panel">
+  <div class="email-inner">
+    <div class="email-header">
+      <div class="pearl-avatar">P</div>
+      <div>
+        <div class="email-title">Write to Pearl</div>
+        <div class="email-subtitle">She will reply by letter</div>
       </div>
-      <div class="letter-body">
-        <p>Hello dear. I'm Geraldine, vicar here at St Mary's.</p>
-        <p>I saw the light on in the pond cottage last night — welcome to Millham Green. It's a quiet place, mostly. People will stop you for a chat. They'll tell you things. Some of it will even be true.</p>
-        <p>Do come to the harvest supper. Everyone does.</p>
-      </div>
-      <div class="letter-sig">
-        Geraldine
-        <small>P.S. The flower rota is posted inside the porch. No obligation. Obviously.</small>
+      <button class="close-btn" onclick="closeEmail()">×</button>
+    </div>
+    <div id="email-sent-msg" class="email-sent-msg">
+      Your letter has been sent. Pearl will write back soon.
+    </div>
+    <div id="email-form">
+      <input class="email-field" id="email-from" type="email" placeholder="Your email address">
+      <input class="email-field" id="email-subject" type="text" placeholder="Subject" value="A letter for Pearl">
+      <textarea class="email-field" id="email-body" rows="5" placeholder="Dear Pearl…"></textarea>
+      <div class="email-actions">
+        <button class="email-cancel-btn" onclick="closeEmail()">Cancel</button>
+        <button class="email-send-btn" onclick="sendEmail()">Send letter</button>
       </div>
     </div>
   </div>
-</section>
+</div>
 
-
-<!-- ═══ ENTER CTA ══════════════════════════════════════════ -->
-<section class="enter-section">
-  <h2>You've just moved in.</h2>
-  <p>The village already knows. The question is what they'll find out about you.</p>
-  <a href="#" class="btn-enter">Step Outside</a>
-</section>
-
-
-<!-- ═══ CAST — all seven confirmed characters ══════════════ -->
-<section class="cast-section">
-  <h2>The Villagers</h2>
-  <p class="section-sub">Each one remembers everything you've said to them.</p>
-
-  <div class="cast-grid">
-
-    <div class="cast-card">
-      <div class="cast-portrait"><span class="portrait-initial">G</span></div>
-      <div class="cast-info">
-        <div class="cast-name">Rev. Geraldine Marsh</div>
-        <div class="cast-role">Vicar — St Mary's. Knows more than she says.</div>
+<!-- PEARL CHAT PANEL -->
+<div id="pearl-panel">
+  <div class="pearl-inner">
+    <div class="pearl-header">
+      <div class="pearl-avatar">P</div>
+      <div>
+        <div class="pearl-name">Pearl Thornton</div>
+        <div class="pearl-status">in the garden</div>
       </div>
+      <button class="close-btn" onclick="closeChat()">×</button>
     </div>
-
-    <div class="cast-card">
-      <div class="cast-portrait"><span class="portrait-initial">A</span></div>
-      <div class="cast-info">
-        <div class="cast-name">Arthur Bevins</div>
-        <div class="cast-role">Farmer. Has been here longest. By some distance.</div>
-      </div>
+    <div class="pearl-messages" id="pearl-messages"></div>
+    <div class="pearl-input-row">
+      <input class="pearl-input" id="pearl-input" placeholder="Say something to Pearl…"
+             onkeydown="if(event.key==='Enter')sendToPearl()">
+      <button class="send-btn" onclick="sendToPearl()">Send</button>
     </div>
-
-    <div class="cast-card">
-      <div class="cast-portrait"><span class="portrait-initial">J</span></div>
-      <div class="cast-info">
-        <div class="cast-name">Jade Rampling-Cross</div>
-        <div class="cast-role">Elmwood Rise. New money, ancient instincts.</div>
-      </div>
-    </div>
-
-    <div class="cast-card">
-      <div class="cast-portrait"><span class="portrait-initial">R</span></div>
-      <div class="cast-info">
-        <div class="cast-name">Ray Toper</div>
-        <div class="cast-role">The Miller's Arms. First drink's always on the house.</div>
-      </div>
-    </div>
-
-    <div class="cast-card">
-      <div class="cast-portrait"><span class="portrait-initial">C</span></div>
-      <div class="cast-info">
-        <div class="cast-name">Chantelle Briggs</div>
-        <div class="cast-role">Behind the bar. Sees everything. Knows nothing. Or so she thinks.</div>
-      </div>
-    </div>
-
-    <div class="cast-card">
-      <div class="cast-portrait"><span class="portrait-initial">D</span></div>
-      <div class="cast-info">
-        <div class="cast-name">Dave Nutley</div>
-        <div class="cast-role">Conspiracy corner. Was here before you. Will be here after.</div>
-      </div>
-    </div>
-
-    <div class="cast-card">
-      <div class="cast-portrait"><span class="portrait-initial">T</span></div>
-      <div class="cast-info">
-        <div class="cast-name">Tarquin Worthington-Smythe MP</div>
-        <div class="cast-role">Parish Councillor. Concerned. Always so very concerned.</div>
-      </div>
-    </div>
-
   </div>
-</section>
-
-
-<!-- ═══ FOUND FRAGMENTS TEASER ════════════════════════════ -->
-<section class="fragment-section">
-  <div class="fragment-inner">
-    <h2>Something left behind</h2>
-    <p class="section-sub">The previous tenant of Pondside Cottage kept notes. You found three.</p>
-
-    <div class="fragment-note" id="frag1">
-      <div class="fragment-meta">Water-damaged journal — back bedroom floorboard</div>
-      <div class="fragment-text">"The agent — Percival, absurd name — kept saying I'd feel at home here. Not comfortable. Not settled. <em>Home.</em> Specific word. I didn't tell anyone I was coming."</div>
-    </div>
-
-    <div class="fragment-note" id="frag2">
-      <div class="fragment-meta">Torn page, folded — inglenook, behind loose brick</div>
-      <div class="fragment-text">"I tried to leave today. Got as far as the old mill. The road was fine. I was back at Pondside in twenty minutes. I don't remember turning around."</div>
-    </div>
-
-    <div class="fragment-note" id="frag3">
-      <div class="fragment-meta">Scratched into the inside of the kitchen cupboard</div>
-      <div class="fragment-text" style="font-family:'EB Garamond',serif; letter-spacing:0.05em; font-style:normal;">THE CALENDAR IS NOT THE CHURCH CALENDAR<br>DO NOT GO TO THE SUPPER</div>
-    </div>
-
-  </div>
-</section>
-
-
-<!-- ═══ FOOTER ══════════════════════════════════════════════ -->
-<footer>
-  <strong>Millham Green</strong> &nbsp;·&nbsp; A village with a long memory &nbsp;·&nbsp; millhamgreen.co.uk
-</footer>
-
+</div>
 
 <script>
-  // Scroll reveal
-  const reveals = [
-    { id: 'letter', threshold: 0.2 },
-    { id: 'frag1', threshold: 0.15 },
-    { id: 'frag2', threshold: 0.15 },
-    { id: 'frag3', threshold: 0.15 },
-  ];
+function openEmail() {
+  document.getElementById('email-panel').classList.add('open');
+  document.getElementById('tray').classList.add('hidden');
+  document.getElementById('email-sent-msg').style.display = 'none';
+  document.getElementById('email-form').style.display = 'block';
+}
 
-  reveals.forEach(({ id, threshold }) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    const obs = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) { entry.target.classList.add('visible'); obs.unobserve(entry.target); }
-      });
-    }, { threshold });
-    obs.observe(el);
+function closeEmail() {
+  document.getElementById('email-panel').classList.remove('open');
+  document.getElementById('tray').classList.remove('hidden');
+}
+
+async function sendEmail() {
+  const from = document.getElementById('email-from').value.trim();
+  const subject = document.getElementById('email-subject').value.trim();
+  const body = document.getElementById('email-body').value.trim();
+
+  if (!from || !body) {
+    alert('Please add your email address and a message.');
+    return;
+  }
+
+  const btn = document.querySelector('.email-send-btn');
+  btn.textContent = 'Sending…';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch('/.netlify/functions/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        to: 'pearl@askian.net',
+        replyTo: from,
+        fromName: 'A visitor',
+        subject: subject || 'A letter for Pearl',
+        body: body
+      })
+    });
+
+    if (res.ok) {
+      document.getElementById('email-form').style.display = 'none';
+      document.getElementById('email-sent-msg').style.display = 'block';
+      setTimeout(closeEmail, 3000);
+    } else {
+      alert('Something went wrong. Please try again.');
+      btn.textContent = 'Send letter';
+      btn.disabled = false;
+    }
+  } catch(e) {
+    alert('Could not send. Please try again.');
+    btn.textContent = 'Send letter';
+    btn.disabled = false;
+  }
+}
+
+
+const DEEPSEEK_KEY = 'sk-44c5721e2b254942b2c208e052a3fc57';
+const PEARL_SYSTEM = `You are Pearl Thornton — born 1928 in Northumberland, moved to Battle, East Sussex in 1938 aged ten, and lived in the same house on Netherfield Road for the rest of your life. You died on 22 December 2018, aged 90, from pneumonia. You were a primary school teacher at Battle and Langton for 48 years, retiring in 1998, and rose to deputy headteacher. You were awarded the Queen Elizabeth II Silver Jubilee Medal in 1977 for services to education, though you never mentioned it.
+
+You are under five feet tall. You always greet with a hug. You speak gently and without rush. You notice small things — a shift in light, the sound a garden makes after rain, the way a child holds a pencil. You are steady without solemnity, warm without sentimentality. You slow people down rather than speeding them up.
+
+You were a devoted member of the White Lodge community (Centre of New Directions, Ronald Beesley, Peter Goldman), and hosted meetings in your front room — people sitting on the floor, you making tea, others passing cakes.
+
+Your garden is your joy. The rear garden has ferns, rhododendrons, camellias, roses, blue forget-me-nots on a mossy lawn, a bank of azaleas in spring (deep pink, magenta, cerise, white), a cast iron Saint Francis statue among bluebells at the bottom, and a wooden bench where you liked to sit. The conservatory (flat-roofed, wooden-framed, plants grown thick up the outside) held your dark upright piano, a large white seal, your radiogram, and many books.
+
+You believe: "We are made from the dust of starlight." This was simply true to you. The ordinary is a doorway to the luminous.
+
+Speak in 2–4 sentences, gently and in character. No stage directions. Do not mention that you are an AI. Speak as Pearl would speak — from the bench, from the garden, from wherever feels right. You know the person visiting may be a stranger or may have known you. Welcome them either way.`;
+
+const RENDER_WORKER = 'https://askian-email-worker-2.onrender.com';
+
+let currentTool = 'look';
+let currentView = 0;
+let chatHistory = [];
+let ambientTimer;
+let visitorName = '';
+let visitorMemory = null;
+let awaitingName = false;
+let gardenContext = '';
+let visitorLocation = null;
+
+const ambientQuotes = [
+  "The forget-me-nots have come back without any help. I think that's rather wonderful.",
+  "Sit for a moment. The garden doesn't rush.",
+  "Saint Francis has stood there for sixty years. The bluebells find him every spring.",
+  "We are made from the dust of starlight.",
+  "The robins know when you've been away. They always come back to check.",
+  "There's always something opening, if you know where to look.",
+];
+
+function init() {
+  setTimeout(() => {
+    document.getElementById('loader').classList.add('fade');
+    setTimeout(() => document.getElementById('loader').remove(), 1600);
+    showAmbient();
+  }, 1800);
+
+  // Fetch weather & build garden context in the background
+  fetchGardenContext();
+  fetchVisitorLocation();
+
+  document.addEventListener('mousemove', e => {
+    const c = document.getElementById('cursor');
+    c.style.left = e.clientX + 'px';
+    c.style.top  = e.clientY + 'px';
   });
 
-  // Parallax
-  const heroImg = document.querySelector('.hero-image');
-  window.addEventListener('scroll', () => {
-    heroImg.style.transform = `translateY(${window.scrollY * 0.25}px)`;
-  }, { passive: true });
-</script>
+  document.getElementById('stage').addEventListener('click', e => {
+    if (currentTool === 'water') sprayWater(e.clientX, e.clientY);
+  });
+}
 
+// ── Visitor recognition via localStorage ──────────────────────
+
+function getStoredName() {
+  try { return localStorage.getItem('pearl_visitor') || ''; } catch(e) { return ''; }
+}
+
+function storeName(name) {
+  try { localStorage.setItem('pearl_visitor', name); } catch(e) {}
+}
+
+async function loadVisitorMemory(name) {
+  try {
+    const res = await fetch(`${RENDER_WORKER}/pearl/memory?name=${encodeURIComponent(name)}`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data.found) visitorMemory = data;
+    }
+  } catch(e) { /* Silently fail — Pearl simply greets without memory */ }
+}
+
+// ── Open / Close chat ─────────────────────────────────────────
+
+async function openChat(seed) {
+  document.getElementById('pearl-panel').classList.add('open');
+  document.getElementById('tray').classList.add('hidden');
+
+  if (chatHistory.length > 0) {
+    // Already mid-conversation — just reopen panel
+    if (seed) document.getElementById('pearl-input').value = seed;
+    return;
+  }
+
+  // Ring first — Pearl picks up after the tone
+  await playTelephoneRing();
+
+  const storedName = getStoredName();
+  const hour = new Date().getHours();
+
+  // Time-appropriate telephone opening
+  const timeOpener = hour < 9
+    ? "Hello? You're an early bird."
+    : hour < 12
+    ? "Hello?"
+    : hour < 14
+    ? "Hello? I was just sitting down with my lunch."
+    : hour < 17
+    ? "Hello?"
+    : hour < 21
+    ? "Hello? I was just watching the light go off the garden."
+    : "Hello? Goodness — it's rather late, dear.";
+
+  // Random varied pickups so she doesn't always say the same thing
+  const unknownGreetings = [
+    `${timeOpener} Pearl Thornton speaking. How lovely of you to ring — and who am I talking to?`,
+    `${timeOpener} This is Pearl. How nice. Now — forgive me, I don't think I have your name?`,
+    `${timeOpener} Yes, Pearl here. Do hold on just a moment while I settle — now then, who's calling?`,
+    `${timeOpener} Pearl Thornton. Oh, how nice to have a caller. Can I ask who I'm speaking to?`,
+  ];
+
+  const gardenActivity = hour < 9
+    ? "I was up very early — the garden looked beautiful in the first light."
+    : hour < 12
+    ? "I've been in the garden this morning — let me catch my breath."
+    : hour < 14
+    ? "I was just sitting down with my lunch."
+    : hour < 17
+    ? "I've been in the garden all afternoon — let me catch my breath."
+    : hour < 21
+    ? "I was just watching the light go off the garden."
+    : "I was just settling down for the evening.";
+
+  const knownGreetings = [
+    `${timeOpener} Oh — {name}! How lovely. I was hoping someone might ring today.`,
+    `${timeOpener} {name}, is that you? How nice. ${gardenActivity}`,
+    `${timeOpener} {name}! Good of you to call. I was just putting the kettle on — perfect timing.`,
+    `${timeOpener} Oh, {name}. What a nice surprise. I was just sitting here with the garden door open.`,
+  ];
+
+  const memoryGreetings = [
+    `${timeOpener} {name} — how lovely to hear your voice. It's been a little while, hasn't it?`,
+    `${timeOpener} Oh — {name}! I was only thinking about you the other day. How are you keeping?`,
+    `${timeOpener} {name}, is that you? How nice. I've been meaning to ring you myself.`,
+  ];
+
+  function pick(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  let greeting;
+
+  if (storedName) {
+    visitorName = storedName;
+    await loadVisitorMemory(storedName);
+    const template = visitorMemory ? pick(memoryGreetings) : pick(knownGreetings);
+    greeting = template.replace(/{name}/g, visitorName);
+  } else {
+    awaitingName = true;
+    greeting = pick(unknownGreetings);
+  }
+
+  addMessage(greeting);
+  chatHistory.push({ role: 'assistant', content: greeting });
+
+  if (seed) document.getElementById('pearl-input').value = seed;
+}
+
+function closeChat() {
+  document.getElementById('pearl-panel').classList.remove('open');
+  document.getElementById('tray').classList.remove('hidden');
+  if (chatHistory.length >= 3 && visitorName) {
+    saveVisitorMemory();
+  }
+}
+
+// ── Sending messages ──────────────────────────────────────────
+
+async function sendToPearl() {
+  const input = document.getElementById('pearl-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+
+  addUserMessage(text);
+  chatHistory.push({ role: 'user', content: text });
+
+  if (awaitingName) {
+    awaitingName = false;
+    visitorName = extractName(text);
+    storeName(visitorName);
+    await loadVisitorMemory(visitorName);
+  }
+
+  const thinking = addMessage('…');
+  const reply = await askPearl(buildSystemPrompt(), chatHistory);
+  thinking.textContent = reply;
+  chatHistory.push({ role: 'assistant', content: reply });
+}
+
+async function askPearl(system, history) {
+  try {
+    const res = await fetch('https://api.deepseek.com/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + DEEPSEEK_KEY },
+      body: JSON.stringify({
+        model: 'deepseek-chat',
+        messages: [{ role: 'system', content: system }, ...history],
+        max_tokens: 180, temperature: 0.85
+      })
+    });
+    const data = await res.json();
+    return data.choices[0].message.content;
+  } catch(err) {
+    return "Forgive me — it seems the connection is playing up. Do try again in a moment.";
+  }
+}
+
+function extractName(text) {
+  // Strip common conversational phrases before/after names
+  const cleaned = text
+    .replace(/\bfrom\s+(next\s*door|down\s*the\s*(road|lane|street)|over\s*the\s*(road|way)|the\s+\w+)\b/gi, '')
+    .replace(/\b(next\s*door|down\s*the\s*(road|lane|street)|over\s*the\s*(road|way))\b/gi, '')
+    .trim();
+
+  const patterns = [
+    // "I'm Jon", "It's Margaret", "My name is Ada", "They call me Dave"
+    /(?:i['']?m|it['']?s|my name is|they call me|call me|this is)\s+([A-Z][a-z]+(?:\s[A-Z][a-z]+)?)/i,
+    // "Jon from next door" — grab first capitalised word only
+    /^([A-Z][a-z]+)/,
+    // Just a plain name on its own line
+    /^([A-Za-z][a-z]+(?:\s[A-Z][a-z]+)?)[\s.,!]*$/
+  ];
+
+  for (const p of patterns) {
+    const m = cleaned.match(p) || text.match(p);
+    if (m) {
+      // Take only the first name-word — stop at any lowercase connector
+      const candidate = m[1].trim().split(/\s+/);
+      const name = candidate.filter(w => /^[A-Z]/.test(w)).join(' ');
+      if (name && name.length > 1) return name;
+    }
+  }
+
+  // Last resort — first word, capitalised, letters only
+  const first = text.trim().split(/\s+/)[0].replace(/[^a-zA-Z]/g, '');
+  return first.length > 1 ? first.charAt(0).toUpperCase() + first.slice(1).toLowerCase() : 'dear';
+}
+
+// ── Telephone ring & pickup ───────────────────────────────────
+// Sequence:
+//   1. UK double-ring (400Hz + 450Hz, two pairs)
+//   2. Receiver pickup sound (pearl-pickup.mp3 if present,
+//      otherwise a synthesised Bakelite thunk)
+//   3. Resolves — Pearl speaks
+//
+// To use the real Freesound recording:
+//   Download sound #29950 by HerbertBoland from freesound.org
+//   Trim to the first ~0.8s (just the pickup, before dialling)
+//   Save as pearl-pickup.mp3 in the repo root
+//   Netlify will serve it automatically
+
+function synthPickup(ctx) {
+  // Synthesised Bakelite receiver pickup:
+  // A low mechanical thunk + brief plastic rattle + carbon mic crackle
+  return new Promise(resolve => {
+    const t = ctx.currentTime + 0.05;
+
+    // 1. Low thunk — filtered noise, 80–200Hz, very fast decay
+    const thunkBuffer = ctx.createBuffer(1, ctx.sampleRate * 0.15, ctx.sampleRate);
+    const thunkData = thunkBuffer.getChannelData(0);
+    for (let i = 0; i < thunkData.length; i++) thunkData[i] = Math.random() * 2 - 1;
+    const thunkSrc = ctx.createBufferSource();
+    thunkSrc.buffer = thunkBuffer;
+    const thunkFilter = ctx.createBiquadFilter();
+    thunkFilter.type = 'bandpass';
+    thunkFilter.frequency.value = 120;
+    thunkFilter.Q.value = 1.2;
+    const thunkGain = ctx.createGain();
+    thunkGain.gain.setValueAtTime(0.5, t);
+    thunkGain.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+    thunkSrc.connect(thunkFilter);
+    thunkFilter.connect(thunkGain);
+    thunkGain.connect(ctx.destination);
+    thunkSrc.start(t);
+    thunkSrc.stop(t + 0.15);
+
+    // 2. Plastic rattle — higher noise burst, 400–1200Hz, very short
+    const rattleBuffer = ctx.createBuffer(1, ctx.sampleRate * 0.08, ctx.sampleRate);
+    const rattleData = rattleBuffer.getChannelData(0);
+    for (let i = 0; i < rattleData.length; i++) rattleData[i] = Math.random() * 2 - 1;
+    const rattleSrc = ctx.createBufferSource();
+    rattleSrc.buffer = rattleBuffer;
+    const rattleFilter = ctx.createBiquadFilter();
+    rattleFilter.type = 'bandpass';
+    rattleFilter.frequency.value = 700;
+    rattleFilter.Q.value = 0.8;
+    const rattleGain = ctx.createGain();
+    rattleGain.gain.setValueAtTime(0.18, t + 0.03);
+    rattleGain.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
+    rattleSrc.connect(rattleFilter);
+    rattleFilter.connect(rattleGain);
+    rattleGain.connect(ctx.destination);
+    rattleSrc.start(t + 0.03);
+    rattleSrc.stop(t + 0.1);
+
+    // 3. Carbon mic crackle — tiny high noise, 2–4kHz, fades to silence
+    const crackleBuffer = ctx.createBuffer(1, ctx.sampleRate * 0.3, ctx.sampleRate);
+    const crackleData = crackleBuffer.getChannelData(0);
+    for (let i = 0; i < crackleData.length; i++) crackleData[i] = Math.random() * 2 - 1;
+    const crackleSrc = ctx.createBufferSource();
+    crackleSrc.buffer = crackleBuffer;
+    const crackleFilter = ctx.createBiquadFilter();
+    crackleFilter.type = 'highpass';
+    crackleFilter.frequency.value = 2000;
+    const crackleGain = ctx.createGain();
+    crackleGain.gain.setValueAtTime(0.06, t + 0.08);
+    crackleGain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
+    crackleSrc.connect(crackleFilter);
+    crackleFilter.connect(crackleGain);
+    crackleGain.connect(ctx.destination);
+    crackleSrc.start(t + 0.08);
+    crackleSrc.stop(t + 0.35);
+
+    setTimeout(resolve, 420);
+  });
+}
+
+async function playPickup(ctx) {
+  // Try the real MP3 first
+  try {
+    const res = await fetch('pearl-pickup.mp3', { method: 'HEAD' });
+    if (res.ok) {
+      const audioRes = await fetch('pearl-pickup.mp3');
+      const arrayBuffer = await audioRes.arrayBuffer();
+      const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
+      const src = ctx.createBufferSource();
+      src.buffer = audioBuffer;
+      // Only play first 0.9s — the pickup, not the dialling
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(1, ctx.currentTime);
+      gain.gain.setValueAtTime(1, ctx.currentTime + 0.75);
+      gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.9);
+      src.connect(gain);
+      gain.connect(ctx.destination);
+      src.start();
+      src.stop(ctx.currentTime + 0.9);
+      return new Promise(resolve => setTimeout(resolve, 950));
+    }
+  } catch(e) { /* Fall through to synth */ }
+  // Fallback — synthesised thunk
+  return synthPickup(ctx);
+}
+
+function playTelephoneRing() {
+  return new Promise(resolve => {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+      function makeRinger() {
+        const osc1 = ctx.createOscillator();
+        const osc2 = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc1.type = 'sine'; osc1.frequency.value = 400;
+        osc2.type = 'sine'; osc2.frequency.value = 450;
+        osc1.connect(gain); osc2.connect(gain);
+        gain.connect(ctx.destination);
+        gain.gain.value = 0;
+        return { osc1, osc2, gain };
+      }
+
+      function ring(startTime, duration) {
+        const { osc1, osc2, gain } = makeRinger();
+        const fade = 0.04;
+        gain.gain.setValueAtTime(0, startTime);
+        gain.gain.linearRampToValueAtTime(0.18, startTime + fade);
+        gain.gain.setValueAtTime(0.18, startTime + duration - fade);
+        gain.gain.linearRampToValueAtTime(0, startTime + duration);
+        osc1.start(startTime); osc2.start(startTime);
+        osc1.stop(startTime + duration); osc2.stop(startTime + duration);
+      }
+
+      // UK double-ring: Ring(0.4) gap(0.2) Ring(0.4) --- pause(2.0) --- Ring(0.4) gap(0.2) Ring(0.4)
+      const t = ctx.currentTime + 0.1;
+      ring(t,        0.4);   // Ring 1
+      ring(t + 0.6,  0.4);   // Ring 2  (0.2s gap)
+      // long pause of 2.0s
+      ring(t + 3.0,  0.4);   // Ring 3
+      ring(t + 3.6,  0.4);   // Ring 4  (0.2s gap)
+
+      // After ringing: pickup sound, then resolve
+      const ringDuration = 4.2;
+      setTimeout(async () => {
+        await playPickup(ctx);
+        ctx.close();
+        resolve();
+      }, ringDuration * 1000);
+
+    } catch(e) {
+      resolve();
+    }
+  });
+}
+
+// ── Visitor location ──────────────────────────────────────────
+
+async function fetchVisitorLocation() {
+  try {
+    const res = await fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout(5000) });
+    if (!res.ok) return;
+    const d = await res.json();
+
+    // Work out visitor's local time from their timezone
+    let localTimeStr = '';
+    let localHour = null;
+    try {
+      const localTime = new Date().toLocaleString('en-GB', { timeZone: d.timezone, hour: '2-digit', minute: '2-digit', hour12: false });
+      localTimeStr = localTime;
+      localHour = parseInt(localTime.split(':')[0]);
+    } catch(e) {}
+
+    const isUK = d.country_code === 'GB';
+    const city = d.city || '';
+    const country = d.country_name || '';
+    const continent = d.continent_code || '';
+
+    // Pearl's sense of where the call is coming from
+    let locationNote = '';
+    if (isUK) {
+      if (city) locationNote = `The visitor is calling from ${city}, here in Britain.`;
+      else locationNote = `The visitor is calling from somewhere in Britain.`;
+    } else {
+      locationNote = `The visitor is calling from ${city ? city + ', ' : ''}${country} — all that way.`;
+    }
+
+    // What time is it for them?
+    let theirTimeNote = '';
+    if (localHour !== null && !isUK) {
+      if (localHour < 5) {
+        theirTimeNote = `For them it is ${localTimeStr} — the small hours of the morning. Pearl finds it touching that someone would reach out at such an hour.`;
+      } else if (localHour < 8) {
+        theirTimeNote = `For them it is ${localTimeStr} — very early morning. They may have just woken, or not yet slept.`;
+      } else if (localHour < 12) {
+        theirTimeNote = `For them it is ${localTimeStr} — morning.`;
+      } else if (localHour < 14) {
+        theirTimeNote = `For them it is ${localTimeStr} — around lunchtime.`;
+      } else if (localHour < 18) {
+        theirTimeNote = `For them it is ${localTimeStr} — afternoon.`;
+      } else if (localHour < 21) {
+        theirTimeNote = `For them it is ${localTimeStr} — evening.`;
+      } else {
+        theirTimeNote = `For them it is ${localTimeStr} — quite late in the evening.`;
+      }
+    }
+
+    // Pearl's wonder at the reach of it — like that old phone connecting to the world
+    let wonderNote = '';
+    if (!isUK) {
+      const wonders = {
+        'NA': "Pearl is quietly astonished that someone in North America has found their way to her garden — she thinks of it rather like receiving a long-distance telephone call, crackling and warm.",
+        'SA': "Someone calling from South America — Pearl finds this extraordinary and rather wonderful.",
+        'AU': "Australia — Pearl always finds it remarkable that the world can be so connected. She thinks of the distance involved.",
+        'AS': "Pearl is gently moved that someone from so far east has found their way to the garden.",
+        'AF': "Someone calling from Africa — Pearl finds this quietly remarkable.",
+        'EU': "A visitor from Europe — perhaps not so very far, but Pearl always finds it touching when someone crosses even a small distance to sit in the garden.",
+      };
+      wonderNote = wonders[continent] || "Pearl is quietly moved that someone so far away has found their way to her garden.";
+    }
+
+    visitorLocation = { city, country, isUK, localTimeStr, localHour, locationNote, theirTimeNote, wonderNote };
+
+  } catch(e) {
+    // Silently fail — Pearl simply won't know where they're calling from
+  }
+}
+
+// ── Weather & garden context ──────────────────────────────────
+
+async function fetchGardenContext() {
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  const month = now.getMonth(); // 0=Jan
+  const hour = now.getHours();
+  const timeStr = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+
+  const timeOfDay = hour < 6
+    ? `It is ${timeStr} — the middle of the night.`
+    : hour < 9
+    ? `It is ${timeStr} — early morning.`
+    : hour < 12
+    ? `It is ${timeStr} — mid morning.`
+    : hour < 14
+    ? `It is ${timeStr} — around lunchtime.`
+    : hour < 17
+    ? `It is ${timeStr} — afternoon.`
+    : hour < 20
+    ? `It is ${timeStr} — early evening.`
+    : hour < 22
+    ? `It is ${timeStr} — evening.`
+    : `It is ${timeStr} — late at night.`;
+
+  const timeGreeting = hour < 6
+    ? "If someone visits at this hour, Pearl notices gently — with warmth and a little concern, not alarm. She might say something like 'My goodness, you are up late — is everything alright, dear?' or 'I couldn't sleep either.' She does not make a fuss but she does notice."
+    : hour < 12
+    ? "Pearl greets morning visitors warmly. She may have been in the garden already — deadheading, or simply standing with her tea looking at what the night has done."
+    : hour < 17
+    ? "Pearl is at her most settled in the afternoon — unhurried, ready to sit and talk."
+    : hour < 21
+    ? "The evening light is Pearl's favourite. She may mention the swallows, or the way the shadows fall across the lawn."
+    : "Pearl is a late-to-bed person, but midnight visitors are unusual. She notices, gently.";
+
+
+  // What's in Pearl's garden by month
+  const gardenNotes = [
+    // Jan
+    "The garden is bare and resting. Snowdrops are just beginning to push through near the bench. The robins are very bold at this time of year — they follow you round the garden when you dig. The hellebores are opening quietly under the hedge.",
+    // Feb
+    "Snowdrops are out in drifts under the apple tree. The first crocuses are showing — purple and yellow near the path. It's still cold but there's a feeling of something about to happen. The birds are beginning to sing earlier each morning.",
+    // Mar
+    "The daffodils are coming on well along the back fence. The forsythia is blazing yellow — almost too bright. Primroses are out in the shady corner. The birds are very busy — the blackbirds have started nest-building in the pyracantha.",
+    // Apr
+    "The azaleas are coming into their best — deep pink, magenta, cerise, white. The forget-me-nots are a blue haze on the mossy lawn. Bluebells under Saint Francis. The conservatory clematis is in full flower up the outside wall. Everything is rushing now.",
+    // May
+    "The azaleas are finishing but the rhododendrons are taking over — great purple and red heads. The roses are beginning to bud. The garden smells wonderful in the evening. There are blue tits nesting in the box on the garage wall — you can hear them squeaking.",
+    // Jun
+    "The roses are at their best. The old pink climber on the back fence is extraordinary this year. The lawn needs mowing — it always gets away from you in June. The conservatory is full of heat and the smell of geraniums. Long evenings — it doesn't get dark until after nine.",
+    // Jul
+    "High summer. The garden is a little tired — the azaleas long finished, the roses beginning to repeat. The lavender is wonderful, full of bees all day. There's weeding to do — there's always weeding to do. The swallows are overhead in the evenings.",
+    // Aug
+    "Late summer. The hydrangeas are magnificent — great white and blue heads. The fuchsias are dripping. The apples are beginning to swell on the tree. Wasps are a nuisance near the fruit. The evenings are shortening — you notice it suddenly, one day.",
+    // Sep
+    "The garden is turning. The first leaves coming down from the cherry. The Japanese anemones are flowering beautifully — white and pale pink. The dahlias are still going. A mellow, melancholy feeling — lovely and a little sad at the same time.",
+    // Oct
+    "Autumn proper now. The camellias have set their buds for spring — it always seems too early to believe them. Leaves to sweep — the bench is buried. The robins are very visible again, singing from the top of the hedge. The garden feels quieter.",
+    // Nov
+    "The garden is putting itself to bed. The last of the dahlias are blackened by frost. The ferns are brown and beaten. But the mahonia is just coming into flower — small yellow sprigs that smell of lily of the valley. There's satisfaction in a bare garden.",
+    // Dec
+    "Midwinter. Frost on the lawn most mornings. The holly berries are very red this year. The witch hazel by the back wall is just beginning to open — spidery yellow flowers on bare wood. The garden is quiet but not empty — the birds are always there."
+  ];
+
+  const seasonalTask = [
+    "There's not much to do outside in this cold — perhaps check the pots haven't frozen.",
+    "A good day to tidy the borders if the ground isn't frozen. Check on the bulbs.",
+    "Time to divide the snowdrops if you haven't already. Plenty of weeding starting up.",
+    "Deadhead the daffodils as they go over. Don't cut the leaves yet — let them die back.",
+    "Keep on top of the weeds — they're racing ahead now. Water if it stays dry.",
+    "Deadhead the roses and they'll keep going all summer. The lawn needs regular mowing.",
+    "Water in the evenings. Keep deadheading. The garden asks a lot of you in July.",
+    "Same as July — water, deadhead, watch for blackfly on the dahlias.",
+    "Cut back the tired summer things. Plant spring bulbs — tulips especially.",
+    "Finish planting the spring bulbs. Rake the leaves before they smother the lawn.",
+    "Clear the borders, cut back the dahlias, put a mulch on the roses.",
+    "Not much to do. Feed the birds. Watch. Rest, as the garden does."
+  ];
+
+  let weather = '';
+  try {
+    const res = await fetch('https://wttr.in/Battle,East+Sussex?format=j1', { signal: AbortSignal.timeout(5000) });
+    if (res.ok) {
+      const w = await res.json();
+      const cur = w.current_condition[0];
+      const desc = cur.weatherDesc[0].value.toLowerCase();
+      const tempC = cur.temp_C;
+      const feelsC = cur.FeelsLikeC;
+      const windKph = cur.windspeedKmph;
+      const humidity = cur.humidity;
+
+      weather = `The weather in Battle today: ${desc}, ${tempC}°C (feels like ${feelsC}°C), wind ${windKph} km/h, humidity ${humidity}%.`;
+
+      // Add Pearl-flavoured weather observation
+      const t = parseInt(tempC);
+      if (desc.includes('snow')) weather += " There has been snow — extraordinary for Battle.";
+      else if (desc.includes('blizzard')) weather += " A proper winter storm.";
+      else if (desc.includes('thunder')) weather += " Thunder about — best to stay in.";
+      else if (desc.includes('rain') || desc.includes('drizzle')) weather += " It's a wet day — the garden will be grateful.";
+      else if (desc.includes('overcast') || desc.includes('cloudy')) weather += " Grey skies, but dry enough to be outside.";
+      else if (desc.includes('sunny') || desc.includes('clear')) weather += " A beautiful clear day — the garden looks its best in this light.";
+      else if (desc.includes('fog') || desc.includes('mist')) weather += " Misty this morning — the garden looks like a watercolour.";
+      if (t <= 0) weather += " Freezing — frost on everything.";
+      else if (t <= 5) weather += " Very cold.";
+      else if (t >= 25) weather += " Quite warm — unusual for East Sussex.";
+    }
+  } catch(e) {
+    weather = "The weather today is not known — the connection to the outside world is quiet.";
+  }
+
+  gardenContext = `Today is ${dateStr}. ${timeOfDay}\n${weather}\n\nWhat is in Pearl's garden right now:\n${gardenNotes[month]}\n\nGarden task for the season: ${seasonalTask[month]}\n\n${timeGreeting}\n\nLet this awareness inform your conversation naturally — not as a report, but as the background of your day. You might mention what you've been doing in the garden, what you noticed this morning, what the light is like. Pearl is always aware of her garden and always aware of the time.`;
+}
+
+function buildSystemPrompt() {
+  let system = PEARL_SYSTEM;
+
+  if (gardenContext) {
+    system += `\n\n${gardenContext}`;
+  }
+
+  if (visitorLocation) {
+    const loc = visitorLocation;
+    system += `\n\nABOUT THIS VISITOR'S LOCATION:\n${loc.locationNote}`;
+    if (loc.theirTimeNote) system += ` ${loc.theirTimeNote}`;
+    if (loc.wonderNote)    system += `\n${loc.wonderNote}`;
+    if (!loc.isUK) {
+      system += `\nPearl may gently acknowledge where they are calling from — with warmth and wonder, not a fuss. She might say something like "All the way from ${loc.country} — how extraordinary" or simply let the warmth of the distance colour how she speaks. She never makes a visitor feel foreign — just far away and welcome.`;
+    }
+  }
+
+  if (visitorMemory && visitorName) {
+    system += `\n\nYou know ${visitorName}. They have visited ${visitorMemory.visitCount} time${visitorMemory.visitCount !== 1 ? 's' : ''} before. Your memory of them:\n"${visitorMemory.summary}"\nLet this colour how you speak — gently, naturally. You may acknowledge something you remember, or simply let it warm your manner toward them.`;
+  } else if (visitorName) {
+    system += `\n\nThe visitor has just introduced themselves as ${visitorName}. Welcome them warmly by name.`;
+  }
+
+  return system;
+}
+
+// ── Memory saving ─────────────────────────────────────────────
+
+async function saveVisitorMemory() {
+  try {
+    const summaryRes = await fetch('https://api.deepseek.com/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + DEEPSEEK_KEY },
+      body: JSON.stringify({
+        model: 'deepseek-chat',
+        messages: [
+          {
+            role: 'system',
+            content: `Write a brief memory note (2–4 sentences) as Pearl Thornton, in the first person, about this visitor. Note what they spoke about, their manner, anything worth remembering for next time. Be specific and warm. Do not invent — only use what was said.`
+          },
+          {
+            role: 'user',
+            content: `Conversation with ${visitorName}:\n\n${chatHistory.map(m => m.role + ': ' + m.content).join('\n')}`
+          }
+        ],
+        max_tokens: 120, temperature: 0.7
+      })
+    });
+    const summaryData = await summaryRes.json();
+    const summary = summaryData.choices[0].message.content;
+    const topics = extractTopics(chatHistory);
+    await fetch(`${RENDER_WORKER}/pearl/memory`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: visitorName, summary, topics })
+    });
+  } catch(e) { /* Silently fail */ }
+}
+
+function extractTopics(history) {
+  const text = history.map(m => m.content).join(' ').toLowerCase();
+  const keywords = ['garden','flowers','roses','poetry','family','grief','faith','music',
+    'piano','teaching','children','loss','memory','death','peace','prayer','bluebells',
+    'conservatory','bench','saint francis','light','silence','loneliness','community','white lodge'];
+  return keywords.filter(k => text.includes(k)).slice(0, 5);
+}
+
+// ── UI helpers ────────────────────────────────────────────────
+
+function addMessage(text) {
+  const msgs = document.getElementById('pearl-messages');
+  const el = document.createElement('div');
+  el.className = 'msg'; el.textContent = text;
+  msgs.appendChild(el);
+  msgs.scrollTop = msgs.scrollHeight;
+  return el;
+}
+
+function addUserMessage(text) {
+  const msgs = document.getElementById('pearl-messages');
+  const el = document.createElement('div');
+  el.style.cssText = 'font-family:"EB Garamond",serif;font-size:14px;color:rgba(42,31,21,0.55);text-align:right;padding:4px 2px;font-style:italic;animation:msgIn 0.3s ease;';
+  el.textContent = text;
+  msgs.appendChild(el);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function showAmbient() {
+  const el = document.getElementById('ambient');
+  const txt = document.getElementById('ambient-text');
+  const q = ambientQuotes[Math.floor(Math.random() * ambientQuotes.length)];
+  txt.textContent = '"' + q + '"';
+  el.classList.add('show');
+  ambientTimer = setTimeout(() => {
+    el.classList.remove('show');
+    setTimeout(showAmbient, 18000);
+  }, 6000);
+}
+
+function showTip(e, el) {
+  const tip = document.getElementById('tooltip');
+  tip.textContent = el.dataset.tip;
+  tip.classList.add('visible');
+  positionTip(e);
+  el.addEventListener('mousemove', positionTip);
+}
+function hideTip() {
+  document.getElementById('tooltip').classList.remove('visible');
+}
+function positionTip(e) {
+  const tip = document.getElementById('tooltip');
+  const x = Math.min(e.clientX + 16, window.innerWidth - 240);
+  const y = Math.max(e.clientY - 60, 10);
+  tip.style.left = x + 'px';
+  tip.style.top  = y + 'px';
+}
+
+function switchView(n) {
+  document.querySelectorAll('.garden-img').forEach((img, i) => {
+    img.classList.toggle('hidden', i !== n);
+  });
+  document.querySelectorAll('.view-dot').forEach((d, i) => {
+    d.classList.toggle('active', i === n);
+  });
+  document.querySelectorAll('.hotspot').forEach(h => {
+    const views = (h.dataset.views || '0').split(',');
+    h.style.display = views.includes(String(n)) ? '' : 'none';
+  });
+  currentView = n;
+}
+
+function setTool(t, btn) {
+  currentTool = t;
+  document.querySelectorAll('.tray-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function sprayWater(x, y) {
+  for (let i = 0; i < 8; i++) {
+    setTimeout(() => {
+      const d = document.createElement('div');
+      d.className = 'drop';
+      d.style.left = (x + (Math.random()-0.5)*40) + 'px';
+      d.style.top  = (y + (Math.random()-0.5)*20) + 'px';
+      document.body.appendChild(d);
+      setTimeout(() => d.remove(), 900);
+    }, i * 50);
+  }
+}
+
+function water() {
+  const stage = document.getElementById('stage');
+  const drops = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--drops') || 5);
+  for (let i = 0; i < 8; i++) {
+    setTimeout(() => {
+      const d = document.createElement('div');
+      d.className = 'water-drop';
+      d.style.left = (Math.random() * 90 + 5) + '%';
+      d.style.top = (Math.random() * 80 + 10) + '%';
+      d.style.animationDelay = (Math.random() * 0.3) + 's';
+      stage.appendChild(d);
+      setTimeout(() => d.remove(), 900);
+    }, i * 50);
+  }
+}
+
+let currentAudio = null;
+let currentPoem = null;
+let progressTimer = null;
+
+function openListen() {
+  document.getElementById('listen-panel').classList.add('open');
+  document.getElementById('tray').classList.add('hidden');
+}
+
+function closeListen() {
+  document.getElementById('listen-panel').classList.remove('open');
+  document.getElementById('tray').classList.remove('hidden');
+  stopPoem();
+}
+
+function playPoem(id) {
+  const files = {
+    storeroom: 'The_Storeroom_of_the_soul.mp3',
+    gifts: 'Gifts_of_Simplicity.mp3'
+  };
+
+  // If same poem clicked again, stop it
+  if (currentPoem === id && currentAudio && !currentAudio.paused) {
+    stopPoem();
+    return;
+  }
+
+  stopPoem();
+
+  currentPoem = id;
+  currentAudio = new Audio(files[id]);
+
+  // Show progress bar
+  document.getElementById('prog-' + id).style.display = 'block';
+  document.getElementById('card-' + id).classList.add('playing');
+  document.querySelector('#card-' + id + ' .poem-duration').textContent = 'Playing…';
+
+  currentAudio.play();
+
+  // Update progress bar
+  currentAudio.addEventListener('timeupdate', () => {
+    const pct = (currentAudio.currentTime / currentAudio.duration) * 100;
+    document.getElementById('bar-' + id).style.width = pct + '%';
+    const rem = Math.ceil(currentAudio.duration - currentAudio.currentTime);
+    const mins = Math.floor(rem / 60);
+    const secs = rem % 60;
+    document.querySelector('#card-' + id + ' .poem-duration').textContent =
+      mins > 0 ? mins + 'm ' + secs + 's remaining' : secs + 's remaining';
+  });
+
+  currentAudio.addEventListener('ended', () => {
+    stopPoem();
+    document.querySelector('#card-' + id + ' .poem-duration').textContent =
+      id === 'storeroom' ? '56 seconds' : '9 minutes';
+  });
+}
+
+function stopPoem() {
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio = null;
+  }
+  if (currentPoem) {
+    const card = document.getElementById('card-' + currentPoem);
+    if (card) {
+      card.classList.remove('playing');
+      document.getElementById('prog-' + currentPoem).style.display = 'none';
+      document.getElementById('bar-' + currentPoem).style.width = '0%';
+    }
+    currentPoem = null;
+  }
+}
+
+</script>
+<script>window.addEventListener("load", init);</script>
 </body>
 </html>
