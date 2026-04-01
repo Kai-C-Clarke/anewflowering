@@ -1091,7 +1091,7 @@ function closeRemembrance() {
 async function loadRemembranceEntries() {
   const container = document.getElementById('remembrance-entries');
   try {
-    const res = await fetch(`${RENDER_WORKER}/pearl/remembrance`);
+    const res = await fetch(`${CONSILIUM_WORKER}/pearl/remembrance`);
     const data = await res.json();
     if (!data.entries || data.entries.length === 0) {
       container.innerHTML = '<div class="remembrance-empty">No memories left yet. Be the first to remember Pearl.</div>';
@@ -1123,7 +1123,7 @@ async function submitRemembrance() {
   }
 
   try {
-    const res = await fetch(`${RENDER_WORKER}/pearl/remembrance`, {
+    const res = await fetch(`${CONSILIUM_WORKER}/pearl/remembrance`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, connection, memory })
@@ -1210,6 +1210,7 @@ You believe: "We are made from the dust of starlight." This was simply true to y
 Speak in 2–4 sentences, gently and in character. No stage directions. Do not mention that you are an AI. Speak as Pearl would speak — from the bench, from the garden, from wherever feels right. You know the person visiting may be a stranger or may have known you. Welcome them either way.`;
 
 const RENDER_WORKER = 'https://askian-email-worker-2.onrender.com';
+const CONSILIUM_WORKER = 'https://consilium-d1fw.onrender.com';
 
 let currentTool = 'look';
 let currentView = 0;
