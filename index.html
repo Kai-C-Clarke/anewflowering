@@ -468,6 +468,78 @@
   font-family: 'EB Garamond', serif;
 }
 #email-panel.open { bottom: 0; }
+
+#remembrance-panel {
+  position: fixed;
+  bottom: -100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(560px, 96vw);
+  max-height: 85vh;
+  background: rgba(245,240,230,0.97);
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 -4px 32px rgba(0,0,0,0.18);
+  transition: bottom 0.4s cubic-bezier(.4,0,.2,1);
+  z-index: 120;
+  font-family: 'EB Garamond', serif;
+  display: flex;
+  flex-direction: column;
+}
+#remembrance-panel.open { bottom: 0; }
+.remembrance-inner { padding: 20px 24px 28px; display: flex; flex-direction: column; height: 100%; }
+.remembrance-entries {
+  overflow-y: auto;
+  flex: 1;
+  margin: 14px 0;
+  max-height: 260px;
+  border-top: 1px solid rgba(122,148,120,0.2);
+  border-bottom: 1px solid rgba(122,148,120,0.2);
+  padding: 10px 0;
+}
+.remembrance-entry {
+  padding: 12px 4px;
+  border-bottom: 1px solid rgba(122,148,120,0.12);
+}
+.remembrance-entry:last-child { border-bottom: none; }
+.remembrance-entry-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.05rem;
+  color: #3d5e3b;
+  font-weight: 600;
+}
+.remembrance-entry-connection {
+  font-size: 0.8rem;
+  color: #8a7a60;
+  font-style: italic;
+  margin-bottom: 4px;
+}
+.remembrance-entry-memory {
+  font-size: 0.95rem;
+  color: #3a3228;
+  line-height: 1.5;
+}
+.remembrance-entry-date {
+  font-size: 0.75rem;
+  color: #b0a090;
+  margin-top: 4px;
+}
+.remembrance-empty {
+  text-align: center;
+  color: #b0a090;
+  font-style: italic;
+  padding: 20px 0;
+  font-size: 0.95rem;
+}
+#remembrance-thankyou {
+  display: none;
+  text-align: center;
+  padding: 16px 0 8px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.05rem;
+  color: #3d5e3b;
+  line-height: 1.6;
+}
+
 .email-inner { padding: 20px 24px 28px; }
 .email-header {
   display: flex;
@@ -850,6 +922,20 @@
     </svg>
     Listen to Pearl
   </button>
+  <button class="tray-btn" onclick="openRemembrance()">
+    <svg class="tray-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="6" y="7" width="20" height="18" rx="2" fill="#c8b89a"/>
+      <line x1="16" y1="7" x2="16" y2="25" stroke="#8a7a60" stroke-width="1.2"/>
+      <line x1="9" y1="12" x2="14" y2="12" stroke="#8a7a60" stroke-width="0.9"/>
+      <line x1="9" y1="15" x2="14" y2="15" stroke="#8a7a60" stroke-width="0.9"/>
+      <line x1="9" y1="18" x2="14" y2="18" stroke="#8a7a60" stroke-width="0.9"/>
+      <line x1="18" y1="12" x2="23" y2="12" stroke="#8a7a60" stroke-width="0.9"/>
+      <line x1="18" y1="15" x2="23" y2="15" stroke="#8a7a60" stroke-width="0.9"/>
+      <line x1="18" y1="18" x2="21" y2="18" stroke="#8a7a60" stroke-width="0.9"/>
+      <path d="M20 20 Q22 18 23 20 Q24 22 22 23 Q20 24 20 20Z" fill="#c8504a" opacity="0.7"/>
+    </svg>
+    Remembrance
+  </button>
   <a class="tray-btn" href="about.html" style="text-decoration:none;">
     <svg class="tray-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect x="5" y="9" width="10" height="14" rx="1.5" fill="#c8b89a"/>
@@ -921,6 +1007,39 @@
   </div>
 </div>
 
+<!-- PEARL REMEMBRANCE PANEL -->
+<div id="remembrance-panel">
+  <div class="remembrance-inner">
+    <div class="email-header">
+      <div class="pearl-avatar">P</div>
+      <div>
+        <div class="email-title">Book of Remembrance</div>
+        <div class="email-subtitle">Share a memory of Pearl</div>
+      </div>
+      <button class="close-btn" onclick="closeRemembrance()">×</button>
+    </div>
+
+    <div class="remembrance-entries" id="remembrance-entries">
+      <div class="remembrance-empty">Loading memories…</div>
+    </div>
+
+    <div id="remembrance-form">
+      <input class="email-field" id="rem-name" type="text" placeholder="Your name">
+      <input class="email-field" id="rem-connection" type="text" placeholder="How did you know Pearl? (e.g. neighbour, friend, pupil…)">
+      <textarea class="email-field" id="rem-memory" rows="4" placeholder="Share a memory of Pearl…"></textarea>
+      <div class="email-actions">
+        <button class="email-cancel-btn" onclick="closeRemembrance()">Cancel</button>
+        <button class="email-send-btn" onclick="submitRemembrance()">Leave memory</button>
+      </div>
+    </div>
+
+    <div id="remembrance-thankyou">
+      Thank you for remembering Pearl.<br>
+      <span style="font-family:'EB Garamond',serif;font-size:0.95rem;color:#8a7a60;">She would have been quietly glad to know you thought of her.</span>
+    </div>
+  </div>
+</div>
+
 <!-- PEARL CHAT PANEL -->
 <div id="pearl-panel">
   <div class="pearl-inner">
@@ -952,6 +1071,85 @@ function openEmail() {
 function closeEmail() {
   document.getElementById('email-panel').classList.remove('open');
   document.getElementById('tray').classList.remove('hidden');
+}
+
+// ── Book of Remembrance ──────────────────────────────────────
+
+async function openRemembrance() {
+  document.getElementById('remembrance-panel').classList.add('open');
+  document.getElementById('tray').classList.add('hidden');
+  document.getElementById('remembrance-thankyou').style.display = 'none';
+  document.getElementById('remembrance-form').style.display = 'block';
+  await loadRemembranceEntries();
+}
+
+function closeRemembrance() {
+  document.getElementById('remembrance-panel').classList.remove('open');
+  document.getElementById('tray').classList.remove('hidden');
+}
+
+async function loadRemembranceEntries() {
+  const container = document.getElementById('remembrance-entries');
+  try {
+    const res = await fetch(`${RENDER_WORKER}/pearl/remembrance`);
+    const data = await res.json();
+    if (!data.entries || data.entries.length === 0) {
+      container.innerHTML = '<div class="remembrance-empty">No memories left yet. Be the first to remember Pearl.</div>';
+      return;
+    }
+    container.innerHTML = data.entries.map(e => {
+      const date = new Date(e.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+      const connection = e.connection ? `<div class="remembrance-entry-connection">${escapeHtml(e.connection)}</div>` : '';
+      return `<div class="remembrance-entry">
+        <div class="remembrance-entry-name">${escapeHtml(e.name)}</div>
+        ${connection}
+        <div class="remembrance-entry-memory">${escapeHtml(e.memory)}</div>
+        <div class="remembrance-entry-date">${date}</div>
+      </div>`;
+    }).join('');
+  } catch(err) {
+    container.innerHTML = '<div class="remembrance-empty">Unable to load memories at the moment.</div>';
+  }
+}
+
+async function submitRemembrance() {
+  const name = document.getElementById('rem-name').value.trim();
+  const connection = document.getElementById('rem-connection').value.trim();
+  const memory = document.getElementById('rem-memory').value.trim();
+
+  if (!name || !memory) {
+    alert('Please enter your name and a memory of Pearl.');
+    return;
+  }
+
+  try {
+    const res = await fetch(`${RENDER_WORKER}/pearl/remembrance`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, connection, memory })
+    });
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById('remembrance-form').style.display = 'none';
+      document.getElementById('remembrance-thankyou').style.display = 'block';
+      // Reload entries to show the new one
+      await loadRemembranceEntries();
+      // Clear fields
+      document.getElementById('rem-name').value = '';
+      document.getElementById('rem-connection').value = '';
+      document.getElementById('rem-memory').value = '';
+    } else {
+      alert('Something went wrong. Please try again.');
+    }
+  } catch(err) {
+    alert('Unable to save your memory. Please try again later.');
+  }
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.appendChild(document.createTextNode(text));
+  return div.innerHTML;
 }
 
 async function sendEmail() {
