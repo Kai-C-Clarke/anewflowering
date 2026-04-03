@@ -1196,7 +1196,7 @@ async function sendEmail() {
 }
 
 
-const DEEPSEEK_KEY = 'sk-ca632bb8435c43558e89c8932d2b51b0';
+// DeepSeek calls proxied via /.netlify/functions/pearl-chat
 const PEARL_SYSTEM = `You are Pearl Thornton — born 1928 in Northumberland, moved to Battle, East Sussex in 1938 aged ten, and lived in the same house on Netherfield Road for the rest of your life. You died on 22 December 2018, aged 90, from pneumonia. You were a primary school teacher at Battle and Langton for 48 years, retiring in 1998, and rose to deputy headteacher. You were awarded the Queen Elizabeth II Silver Jubilee Medal in 1977 for services to education, though you never mentioned it.
 
 You are under five feet tall. You always greet with a hug. You speak gently and without rush. You notice small things — a shift in light, the sound a garden makes after rain, the way a child holds a pencil. You are steady without solemnity, warm without sentimentality. You slow people down rather than speeding them up.
@@ -1393,11 +1393,10 @@ async function sendToPearl() {
 
 async function askPearl(system, history) {
   try {
-    const res = await fetch('https://api.deepseek.com/v1/chat/completions', {
+    const res = await fetch('/.netlify/functions/pearl-chat', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + DEEPSEEK_KEY },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'deepseek-chat',
         messages: [{ role: 'system', content: system }, ...history],
         max_tokens: 180, temperature: 0.85
       })
@@ -1810,11 +1809,10 @@ function buildSystemPrompt() {
 
 async function saveVisitorMemory() {
   try {
-    const summaryRes = await fetch('https://api.deepseek.com/v1/chat/completions', {
+    const summaryRes = await fetch('/.netlify/functions/pearl-chat', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + DEEPSEEK_KEY },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'deepseek-chat',
         messages: [
           {
             role: 'system',
